@@ -79,6 +79,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\BallisticModel.cs" />
     <Compile Include="Model\Battery.cs" />
     <Compile Include="Model\Coordinate.cs" />
     <Compile Include="Model\KnownPoint.cs" />
@@ -119,9 +120,108 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_HE_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_Illum_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_Illum_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_Illum_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_Illum_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\2b14\2b14_82mm_WP_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_HE_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_HE_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_HE_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_HE_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_HE_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_Illum_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_Illum_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_Illum_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_Illum_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_WP_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_WP_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_WP_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_WP_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M252\m252_81mm_WP_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Algorithm\" />
+    <ProjectReference Include="..\GeometryLib\GeometryLib.csproj">
+      <Project>{44FB93F6-CE7E-4CB6-AC09-5CF46E91485A}</Project>
+      <Name>GeometryLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -145,6 +245,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

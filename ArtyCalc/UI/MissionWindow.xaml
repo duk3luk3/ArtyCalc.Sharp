@@ -1,0 +1,190 @@
+﻿<Window x:Class="ArtyCalc.MissionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MissionWindow" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignWidth="433" SizeToContent="WidthAndHeight"
+        DataContext="{Binding RelativeSource={RelativeSource self}}" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TabControl BorderThickness="0" x:Name="EMissionType">
+            <!--<TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem"></ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>-->
+            
+            <TabItem Header="Grid">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.ColumnSpan="2">MISSION GRID REFERENCE</Label>
+                    
+                    <Label Grid.Row="1">Grid</Label>
+                    <Label Grid.Row="2">Alt</Label>
+                    
+                    <TextBox x:Name="EGridGrid" Grid.Column="1" Grid.Row="1" Text="{Binding Path=Mission.Grid.Grid}"></TextBox>
+                    <TextBox x:Name="EGridAlt" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Mission.Grid.Altitude}"></TextBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Polar">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.ColumnSpan="2">MISSION POLAR COORDINATES</Label>
+                    
+                    <Label Grid.Column="0" Grid.Row="1">Observer</Label>
+                    <Label Grid.Column="0" Grid.Row="2">OT Dir</Label>
+                    <Label Grid.Column="0" Grid.Row="3">Range</Label>
+                    <Label Grid.Column="0" Grid.Row="4">Add Alt:</Label>
+                    
+                    
+                    <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding Path=Mission.Observer.Name}"></TextBox>
+                    <TextBox x:Name="EPolarOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Mission.OTDir}"></TextBox>
+                    <TextBox x:Name="EPolarRange" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Mission.Range}"></TextBox>
+                    <TextBox x:Name="EPolarAddAlt" Grid.Column="1" Grid.Row="4" Text="{Binding Path=Mission.DAlt}"></TextBox>
+                    
+                </Grid>
+                
+                
+
+            </TabItem>
+            <TabItem Header="Shift">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <Label Grid.ColumnSpan="2">MISSION SHIFT COORDINATES</Label>
+
+                    <Label Grid.Column="0" Grid.Row="1">Point</Label>
+                    <Label Grid.Column="0" Grid.Row="2">OT Dir</Label>
+                    <Label Grid.Column="0" Grid.Row="3">Right (Left)</Label>
+                    <Label Grid.Column="0" Grid.Row="4">Add (Drop)</Label>
+                    <Label Grid.Column="0" Grid.Row="5">Up (Down)</Label>
+
+
+                    <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding Path=Mission.Point.Name}"></TextBox>
+                    <TextBox x:Name="EShiftOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Mission.OTDir}"></TextBox>
+                    <TextBox x:Name="EShiftRight" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Mission.Right}"></TextBox>
+                    <TextBox x:Name="EShiftAdd" Grid.Column="1" Grid.Row="4" Text="{Binding Path=Mission.Add}"></TextBox>
+                    <TextBox x:Name="EShiftUp" Grid.Column="1" Grid.Row="5" Text="{Binding Path=Mission.Up}"></TextBox>
+
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+        
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Label Grid.ColumnSpan="2">TARGET DESCRIPTION</Label>
+            <Label Grid.Row="1" Grid.Column="0">Target Number</Label>
+            <Label Grid.Row="2" Grid.Column="0">Target Description</Label>
+            <Label Grid.Row="3" Grid.Column="0">Radius / Width</Label>
+            <Label Grid.Row="4" Grid.Column="0">Length</Label>
+            <Label Grid.Row="5" Grid.Column="0">Attitude</Label>
+            
+            <TextBox x:Name="ETgtNr" Grid.Column="1" Grid.Row="1"></TextBox>
+            <TextBox x:Name="ETgtDesc" Grid.Column="1" Grid.Row="2"></TextBox>
+            <TextBox x:Name="ETgtRadius" Grid.Column="1" Grid.Row="3"></TextBox>
+            <TextBox x:Name="ETgtLength" Grid.Column="1" Grid.Row="4"></TextBox>
+            <TextBox x:Name="ETgtAttitude" Grid.Column="1" Grid.Row="5"></TextBox>
+        </Grid>
+        
+        <Grid Grid.Column="1" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                
+            </Grid.RowDefinitions>
+            
+            <Label Grid.ColumnSpan="2">METHOD OF ENGAGEMENT</Label>
+            
+            <Label Grid.Row="1">Danger Close</Label>
+            <Label Grid.Row="2">Notes</Label>
+            <Label Grid.Row="3">Ammunition</Label>
+            <Label Grid.Row="4">Fuze</Label>
+            <Label Grid.Row="5">Fuze-Time</Label>
+            <Label Grid.Row="6">Round Count</Label>
+            <Label Grid.Row="7">Adj. Round Count</Label>
+            <Label Grid.Row="8">Adjust Piece</Label>
+            <Label Grid.Row="9">Sheaf</Label>
+            
+            <CheckBox x:Name="EDangerClose" Grid.Column="1" Grid.Row="1">Yes</CheckBox>
+            <TextBox x:Name="ENotes" Grid.Column="1" Grid.Row="2"></TextBox>
+            <ComboBox x:Name="EAmmo" Grid.Column="1" Grid.Row="3"></ComboBox>
+            <ComboBox x:Name="EFuze" Grid.Column="1" Grid.Row="4"></ComboBox>
+            <TextBox x:Name="EFuzetime" Grid.Column="1" Grid.Row="5"></TextBox>
+            <TextBox x:Name="ERoundcount" Grid.Column="1" Grid.Row="6"></TextBox>
+            <TextBox x:Name="EAdjRoundcount" Grid.Column="1" Grid.Row="7"></TextBox>
+            <TextBox x:Name="EAdjPiece" Grid.Column="1" Grid.Row="8"></TextBox>
+            <ComboBox x:Name="ESheath" Grid.Column="1" Grid.Row="9"></ComboBox>
+
+
+
+        </Grid>
+        
+    </Grid>
+</Window>

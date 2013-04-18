@@ -7,60 +7,71 @@ using System.Collections.ObjectModel;
 
 namespace ArtyCalc.Model
 {
-    public enum BatteryType {
-        Mortar,
-        M119
-    }
-
     public class Battery : INotifyPropertyChanged
     {
         private string name;
         private string callsign;
 
-        private BatteryType bType;
+        private Weapon bWeapon;
         private Coordinate coords;
         private double dir;
 
         private string prefix;
         private int start;
 
-        private ObservableCollection<KnownPoint> observers;
-        private ObservableCollection<KnownPoint> knownpoints;
+        private ObservableCollection<KnownPoint> observers = new ObservableCollection<KnownPoint>();
+        private ObservableCollection<KnownPoint> knownpoints = new ObservableCollection<KnownPoint>();
+        private ObservableCollection<MissionSpec> missions = new ObservableCollection<MissionSpec>();
+
+
+        private MissionSpec currentMission;
+        
 
         #region Properties
 
-        
-
+        public ObservableCollection<MissionSpec> Missions
+        {
+            get { return missions; }
+            /*set
+            {
+                missions = value;
+                OnPropertyChanged("Missions");
+            }*/
+        }
+        public MissionSpec CurrentMission
+        {
+            get { return currentMission; }
+            set
+            {
+                currentMission = value;
+                OnPropertyChanged("CurrentMission");
+            }
+        }
         public ObservableCollection<KnownPoint> Observers
         {
             get { return observers; }
-            set
+            /*set
             {
                 observers = value;
                 OnPropertyChanged("Observers");
-            }
+            }*/
         }
-
-        
-
         public ObservableCollection<KnownPoint> Knownpoints
         {
             get { return knownpoints; }
-            set
+            /*set
             {
                 knownpoints = value;
                 OnPropertyChanged("Knownpoints");
-            }
+            }*/
         }
 
-
-
-        public BatteryType BType
+        public Weapon BWeapon
         {
-            get { return bType; }
+            get { return bWeapon; }
             set
             {
-                bType = value;
+                bWeapon = value;
                 OnPropertyChanged("BType");
             }
         }
@@ -138,18 +149,19 @@ namespace ArtyCalc.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Battery(string name, string callsign, BatteryType btype, Coordinate coords, double dir, string prefix, int start)
+        public Battery(string name, string callsign, Weapon bweapon, Coordinate coords, double dir, string prefix, int start)
         {
             this.name = name;
             this.callsign = callsign;
-            this.bType = btype;
+            this.bWeapon = bweapon;
             this.coords = coords;
             this.dir = dir;
             this.prefix = prefix;
             this.start = start;
 
-            this.observers = new ObservableCollection<KnownPoint>();
-            this.knownpoints = new ObservableCollection<KnownPoint>();
+            // using initializer instead
+            //this.observers = new ObservableCollection<KnownPoint>();
+            //this.knownpoints = new ObservableCollection<KnownPoint>();
         }
 
         protected void OnPropertyChanged(string name)

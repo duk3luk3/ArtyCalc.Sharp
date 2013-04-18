@@ -22,6 +22,8 @@ namespace ArtyCalc
     /// </summary>
     public partial class BatteryWindow : Window, INotifyPropertyChanged
     {
+        private MissionWindow mw;
+
         private ObservableCollection<Battery> batteryList = new ObservableCollection<Battery>();
         public ObservableCollection<Battery> BatteryList
         {
@@ -41,14 +43,40 @@ namespace ArtyCalc
             }
         }
 
+        private KnownPoint selectedObserver;
+        public KnownPoint SelectedObserver
+        {
+            get { return selectedObserver; }
+            set
+            {
+                selectedObserver = value;
+                OnPropertyChanged("SelectedObserver");
+            }
+        }
+
+        private KnownPoint selectedPoint;
+
+        public KnownPoint SelectedPoint
+        {
+            get { return selectedPoint; }
+            set
+            {
+                selectedPoint = value;
+                OnPropertyChanged("SelectedPoint");
+            }
+        }
+
+
         public BatteryWindow()
         {
-            Battery b = new Battery("New Battery", "abc", BatteryType.M119, new Coordinate("0505",0), 0, "pre", 0);
+            mw = new MissionWindow(this);
+
+            Battery b = new Battery("New Battery", "abc", Weapon.DefinedWeapons[0], new Coordinate("0505",0), 0, "pre", 0);
             b.Observers.Add(new KnownPoint(new Coordinate("0808",100),"obs1"));
             b.Observers.Add(new KnownPoint(new Coordinate("0909", 100), "obs2"));
             BatteryList.Add(b);
             
-            Battery b2 = new Battery("New Battery 2", "def", BatteryType.Mortar, new Coordinate("0606",100), 0, "pre", 0);
+            Battery b2 = new Battery("New Battery 2", "def", Weapon.DefinedWeapons[0], new Coordinate("0606",100), 0, "pre", 0);
             BatteryList.Add(b2);
 
             SelectedBattery = b;
@@ -58,7 +86,7 @@ namespace ArtyCalc
 
         private void EBattSave_Click(object sender, RoutedEventArgs e)
         {
-            Battery b = new Battery(EBattName.Text, "", BatteryType.M119, new Coordinate("0808",200), 0, "pre", 0);
+            Battery b = new Battery(EBattName.Text, "", Weapon.DefinedWeapons[0], new Coordinate("0808",200), 0, "pre", 0);
             BatteryList.Add(b);
             SelectedBattery = b;
         }
@@ -94,6 +122,39 @@ namespace ArtyCalc
                 SelectedBattery.Knownpoints.Add(k);
                 EKPSelect.SelectedItem = k;
             }
+        }
+
+        private void BMissionPolar_Click(object sender, RoutedEventArgs e)
+        {
+            var mission = new MissionPolarSpec();
+            selectedBattery.Missions.Add(mission);
+            selectedBattery.CurrentMission = mission;
+
+            mw.Show();
+            mw.Left = this.Left + this.Width;
+            mw.Top = this.Top;
+        }
+
+        private void BMissionGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mission = new MissionGridSpec();
+            selectedBattery.Missions.Add(mission);
+            selectedBattery.CurrentMission = mission;
+
+            mw.Show();
+            mw.Left = this.Left + this.Width;
+            mw.Top = this.Top;
+        }
+
+        private void BMissionShift_Click(object sender, RoutedEventArgs e)
+        {
+            var mission = new MissionShiftSpec();
+            selectedBattery.Missions.Add(mission);
+            selectedBattery.CurrentMission = mission;
+
+            mw.Show();
+            mw.Left = this.Left + this.Width;
+            mw.Top = this.Top;
         }
     }
 }
