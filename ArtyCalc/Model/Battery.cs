@@ -14,7 +14,7 @@ namespace ArtyCalc.Model
 
         private Weapon bWeapon;
         private Coordinate coords;
-        private double dir;
+        private BaseAngle dir;
 
         private string prefix;
         private int start;
@@ -65,7 +65,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Knownpoints");
             }*/
         }
-
         public Weapon BWeapon
         {
             get { return bWeapon; }
@@ -75,7 +74,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("BType");
             }
         }
-
         public Coordinate Coords
         {
             get { return coords; }
@@ -92,7 +90,7 @@ namespace ArtyCalc.Model
             OnPropertyChanged("Coords");
         }
 
-        public double Dir
+        public BaseAngle Dir
         {
             get { return dir; }
             set
@@ -149,7 +147,7 @@ namespace ArtyCalc.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Battery(string name, string callsign, Weapon bweapon, Coordinate coords, double dir, string prefix, int start)
+        public Battery(string name, string callsign, Weapon bweapon, Coordinate coords, BaseAngle dir, string prefix, int start)
         {
             this.name = name;
             this.callsign = callsign;

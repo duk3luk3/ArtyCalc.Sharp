@@ -20,33 +20,46 @@ namespace ArtyCalc
     /// </summary>
     public partial class MissionWindow : Window, INotifyPropertyChanged
     {
-        BatteryWindow battery;
+        BatteryWindow batterywindow;
 
         
-        private MissionSpec mission;
+        //private MissionSpec mission;
 
+        /*
         public MissionSpec Mission
         {
-            get { return mission; }
+            get {
+                if (batterywindow != null && batterywindow.SelectedBattery != null)
+                {
+                    return batterywindow.SelectedBattery.CurrentMission;
+                }
+                else
+                    return null;
+            }
             set
             {
-                mission = value;
-                OnPropertyChanged("Mission");
+                if (batterywindow != null && batterywindow.SelectedBattery != null)
+                {
+                    batterywindow.SelectedBattery.CurrentMission = value;
+                    OnPropertyChanged("Mission");
+                }
             }
-        }
+        }*/
 
-        
-
-        public BatteryWindow Battery
+        public BatteryWindow BatteryWindow
         {
-            get { return battery; }
-            set { battery = value; }
+            get { return batterywindow; }
+            set 
+            {
+                batterywindow = value;
+                OnPropertyChanged("BatteryWindow");
+            }
         }
 
         public MissionWindow(BatteryWindow battery)
         {
-            this.battery = battery;
-            this.PropertyChanged +=new PropertyChangedEventHandler(MissionWindow_PropertyChanged);
+            this.batterywindow = battery;
+            this.batterywindow.SelectedBattery.PropertyChanged += new PropertyChangedEventHandler(MissionWindow_PropertyChanged);
 
             InitializeComponent();
         }
@@ -55,6 +68,8 @@ namespace ArtyCalc
         {
             if (e.PropertyName == "Mission")
             {
+                var Mission = batterywindow.SelectedBattery.CurrentMission;
+
                 if (Mission != null)
                 {
                     if (Mission is MissionGridSpec)
@@ -83,5 +98,11 @@ namespace ArtyCalc
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void EAmmo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //mission.Ammunition = (Ammunition)EAmmo.SelectedItem;
+            //Console.WriteLine("Changed item - selected item: " + EAmmo.SelectedItem + " - selected value: " + EAmmo.SelectedValue);
+        }
     }
 }

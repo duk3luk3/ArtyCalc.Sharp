@@ -69,24 +69,26 @@ namespace ArtyCalc
 
         public BatteryWindow()
         {
-            mw = new MissionWindow(this);
+            
 
-            Battery b = new Battery("New Battery", "abc", Weapon.DefinedWeapons[0], new Coordinate("0505",0), 0, "pre", 0);
+            Battery b = new Battery("New Battery", "abc", Weapon.DefinedWeapons[0], new Coordinate("0505",0), BaseAngle.Create<MilAngle>(0), "pre", 0);
             b.Observers.Add(new KnownPoint(new Coordinate("0808",100),"obs1"));
             b.Observers.Add(new KnownPoint(new Coordinate("0909", 100), "obs2"));
             BatteryList.Add(b);
-            
-            Battery b2 = new Battery("New Battery 2", "def", Weapon.DefinedWeapons[0], new Coordinate("0606",100), 0, "pre", 0);
+
+            Battery b2 = new Battery("New Battery 2", "def", Weapon.DefinedWeapons[0], new Coordinate("0606", 100), BaseAngle.Create<MilAngle>(0), "pre", 0);
             BatteryList.Add(b2);
 
             SelectedBattery = b;
+
+            mw = new MissionWindow(this);
             
             InitializeComponent();
         }
 
         private void EBattSave_Click(object sender, RoutedEventArgs e)
         {
-            Battery b = new Battery(EBattName.Text, "", Weapon.DefinedWeapons[0], new Coordinate("0808",200), 0, "pre", 0);
+            Battery b = new Battery(EBattName.Text, "", Weapon.DefinedWeapons[0], new Coordinate("0808", 200), BaseAngle.Create<MilAngle>(0), "pre", 0);
             BatteryList.Add(b);
             SelectedBattery = b;
         }

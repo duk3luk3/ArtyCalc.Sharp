@@ -3,9 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Windows.Data;
+using System.Windows;
 
 namespace ArtyCalc.Model
 {
+    [ValueConversion(typeof(string), typeof(BaseAngle))]
+    public class GridToStringConverter : BaseConverter, IValueConverter
+    {
+        public GridToStringConverter()
+            : base()
+        {
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return DependencyProperty.UnsetValue;
+
+            if (!(value is string))
+                return DependencyProperty.UnsetValue;
+
+            string gridStr = (string)value;
+
+            if ((gridStr.Length % 2) != 0)
+            {
+                return DependencyProperty.UnsetValue;
+            }
+
+            return value;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value;
+        }
+    }
+
     public class Coordinate
     {
         private double gridX;

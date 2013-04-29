@@ -23,7 +23,7 @@ namespace ArtyCalc.Model
 
 
         public static ObservableCollection<Weapon> DefinedWeapons = new ObservableCollection<Weapon>(new Weapon[] {
-            new Weapon() {designation = "M252 81mm Mortar", Munitions = new List<Ammunition>(new Ammunition[] {
+            new Weapon() {designation = "M252 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
                         Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge0",FileMode.Open)),
@@ -31,6 +31,13 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge2",FileMode.Open)),
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge3",FileMode.Open)),
                         Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Delay", HasTimeFuze=false }
                     }
                     )
                 },
@@ -42,6 +49,13 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge3",FileMode.Open)),
                         Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge4",FileMode.Open))
                     }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                    }
                     )
                 },
                 new Ammunition() { Designation = "Illum", Rangetables = new List<Rangetable>(
@@ -51,11 +65,15 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge3",FileMode.Open)),
                         Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge4",FileMode.Open))
                     }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                    }
                     )
                 }
             })
             },
-            new Weapon() {designation = "2B14 81mm Mortar", Munitions = new List<Ammunition>(new Ammunition[] {
+            new Weapon() {designation = "2B14 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
                         Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge0",FileMode.Open)),
@@ -63,6 +81,13 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge2",FileMode.Open)),
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge3",FileMode.Open)),
                         Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Delay", HasTimeFuze=false }
                     }
                     )
                 },
@@ -74,6 +99,13 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge3",FileMode.Open)),
                         Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge4",FileMode.Open))
                     }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
+                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                    }
                     )
                 },
                 new Ammunition() { Designation = "Illum", Rangetables = new List<Rangetable>(
@@ -82,6 +114,10 @@ namespace ArtyCalc.Model
                         Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge1",FileMode.Open)),
                         Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge2",FileMode.Open)),
                         Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge3",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
                     }
                     )
                 }
@@ -94,7 +130,7 @@ namespace ArtyCalc.Model
             return DefinedWeapons;
         }
 
-        public List<Ammunition> Munitions { get; set; }
+        public ObservableCollection<Ammunition> Munitions { get; set; }
 
         private string designation;
 
@@ -123,6 +159,26 @@ namespace ArtyCalc.Model
             get { return rangetables; }
             set { rangetables = value; }
         }
+
+        private ObservableCollection<Fuze> fuzes;
+
+        public ObservableCollection<Fuze> Fuzes
+        {
+            get { return fuzes; }
+            set { fuzes = value; }
+        }
+
+        public override string ToString()
+        {
+            return "Ammunition: " + Designation;
+        }
+
+    }
+
+    public class Fuze
+    {
+        public string Designation { get; set; }
+        public bool HasTimeFuze { get; set; }
     }
 
     public class Rangetable

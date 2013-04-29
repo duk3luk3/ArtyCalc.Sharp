@@ -8,15 +8,25 @@ namespace ArtyCalc.Model
 {
     public abstract class MissionSpec : INotifyPropertyChanged
     {
+        #region fields
         protected abstract Coordinate GetCoords();
+        private string targetNumber;
+        private string targetDescription;
+        private double radius;
+        private double length;
+        private BaseAngle attitude;
+        private bool dangerClose;
+        private string notes;
+        private Ammunition munition;
+        private Fuze fuze;
 
+        #endregion
+
+        #region props
         public Coordinate Coords
         {
             get { return GetCoords(); }
         }
-
-        private string targetNumber;
-
         public string TargetNumber
         {
             get { return targetNumber; }
@@ -26,9 +36,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("TargetNumber");
             }
         }
-
-        private string targetDescription;
-
         public string TargetDescription
         {
             get { return targetDescription; }
@@ -38,9 +45,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("TargetDescription");
             }
         }
-
-        private double radius;
-
         public double Radius
         {
             get { return radius; }
@@ -50,9 +54,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Radius");
             }
         }
-
-        private double length;
-
         public double Length
         {
             get { return length; }
@@ -62,10 +63,7 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Length");
             }
         }
-
-        private double attitude;
-
-        public double Attitude
+        public BaseAngle Attitude
         {
             get { return attitude; }
             set
@@ -74,9 +72,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Attitude");
             }
         }
-
-        private bool dangerClose;
-
         public bool DangerClose
         {
             get { return dangerClose; }
@@ -86,9 +81,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("DangerClose");
             }
         }
-
-        private string notes;
-
         public string Notes
         {
             get { return notes; }
@@ -98,9 +90,27 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Notes");
             }
         }
+        public Ammunition Ammunition
+        {
+            get { return munition; }
+            set
+            {
+                munition = value;
+                Console.WriteLine("Ammunition set");
+                OnPropertyChanged("Ammunition");
+            }
+        }
+        public Fuze Fuze
+        {
+            get { return fuze; }
+            set
+            {
+                fuze = value;
+                OnPropertyChanged("Fuze");
+            }
+        }
 
-        
-
+        #endregion
 
         protected virtual void OnPropertyChanged(string name)
         {

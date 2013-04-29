@@ -80,7 +80,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\BallisticModel.cs" />
+    <Compile Include="Model\BaseConverter.cs" />
     <Compile Include="Model\Battery.cs" />
+    <Compile Include="Model\CartesianAngle.cs" />
     <Compile Include="Model\Coordinate.cs" />
     <Compile Include="Model\KnownPoint.cs" />
     <Compile Include="Model\Mission.cs" />

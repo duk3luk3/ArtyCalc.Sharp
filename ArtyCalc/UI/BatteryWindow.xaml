@@ -67,9 +67,9 @@
             </Grid>
             <TextBox x:Name="EBattCallsign" Grid.Row="1" Grid.Column="1" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Callsign}" Grid.ColumnSpan="2"></TextBox>
             <ComboBox x:Name="EBattType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" ItemsSource="{Binding Source={StaticResource batteryTypeData}}" SelectedItem="{Binding Path=BWeapon}" DisplayMemberPath="Designation"></ComboBox>
-            <TextBox x:Name="EBattGrid" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Coords.Grid}"></TextBox>
+            <TextBox x:Name="EBattGrid" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Coords.Grid, Converter={d:GridToStringConverter}}"></TextBox>
             <TextBox x:Name="EBattAlt" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Coords.Altitude}"></TextBox>
-            <TextBox x:Name="EBattDir" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Dir}"></TextBox>
+            <TextBox x:Name="EBattDir" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Dir, Converter={d:AngleToStringConverter}}"></TextBox>
             <TextBox x:Name="EBattPre" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Prefix}"></TextBox>
             <TextBox x:Name="EBattStart" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding Path=SelectedBattery}" Text="{Binding Path=Start}"></TextBox>
         </Grid>
@@ -110,7 +110,7 @@
             </Grid>
 
             <TextBox x:Name="EObsName" Grid.Row="2" Grid.Column="1" Text="{Binding Path=SelectedObserver.Name}"          ></TextBox>
-            <TextBox x:Name="EObsGrid" Grid.Row="3" Grid.Column="1" Text="{Binding Path=SelectedObserver.Coord.Grid}"    ></TextBox>
+            <TextBox x:Name="EObsGrid" Grid.Row="3" Grid.Column="1" Text="{Binding Path=SelectedObserver.Coord.Grid, Converter={d:GridToStringConverter}}"    ></TextBox>
             <TextBox x:Name="EObsAlt" Grid.Row="4" Grid.Column="1"  Text="{Binding Path=SelectedObserver.Coord.Altitude}"></TextBox>
 
             <Label Grid.ColumnSpan="2" Grid.Row="5">KNOWN POINTS</Label>
@@ -130,7 +130,7 @@
             </Grid>
 
             <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="1"  Text="{Binding ElementName=EKPSelect, Path=SelectedItem.Name}"          ></TextBox>
-            <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="1"  Text="{Binding ElementName=EKPSelect, Path=SelectedItem.Coord.Grid}"    ></TextBox>
+            <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="1"  Text="{Binding ElementName=EKPSelect, Path=SelectedItem.Coord.Grid, Converter={d:GridToStringConverter}}"    ></TextBox>
             <TextBox x:Name="EKPAlt" Grid.Row="9" Grid.Column="1"   Text="{Binding ElementName=EKPSelect, Path=SelectedItem.Coord.Altitude}"></TextBox>
         </Grid>
         
