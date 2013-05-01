@@ -125,7 +125,7 @@ namespace ArtyCalc.Model
 
     public class MissionGridSpec : MissionSpec
     {
-        private Coordinate grid;
+        private Coordinate grid = new Coordinate("",0);
 
         public Coordinate Grid
         {
@@ -133,7 +133,9 @@ namespace ArtyCalc.Model
             set
             {
                 grid = value;
+                Console.WriteLine("Coords changed");
                 OnPropertyChanged("Grid");
+                OnPropertyChanged("Coords");
             }
         }
 

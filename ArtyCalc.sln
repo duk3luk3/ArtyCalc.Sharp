@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtyCalc", "ArtyCalc\ArtyCalc.csproj", "{E99366E1-47DC-4E82-9D36-C1F9D73184D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBindingLab", "..\DataBindingLab\DataBindingLab.csproj", "{6AFEA501-7402-47C4-805D-060448961C78}"

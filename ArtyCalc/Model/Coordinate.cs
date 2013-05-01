@@ -40,7 +40,7 @@ namespace ArtyCalc.Model
         }
     }
 
-    public class Coordinate
+    public class Coordinate : INotifyPropertyChanged
     {
         private double gridX;
         private double gridY;
@@ -62,12 +62,16 @@ namespace ArtyCalc.Model
             get { return String.Format("{0,5:00000}{1,5:00000}", (int)gridX, (int)gridY); }
             set {
                 setGrid(value);
+                Console.WriteLine("Grid changed");
                 OnPropertyChanged("Grid");
             }
         }
 
         private void setGrid(string gridStr)
         {
+            if (gridStr == "")
+                return;
+
             if ((gridStr.Length % 2) != 0)
             {
                 throw new ArgumentException("Illegal grid string");

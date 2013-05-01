@@ -116,12 +116,9 @@ namespace ArtyCalc.Model
         }
     }
 
-    
-
     [ValueConversion(typeof(string), typeof(BaseAngle))]
     public class AngleToStringConverter : BaseConverter, IValueConverter
     {
-
         public AngleToStringConverter()
             : base()
         {
