@@ -12,6 +12,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         
         <TabControl BorderThickness="0" x:Name="EMissionType">
@@ -42,7 +48,7 @@
                     <Label Grid.Row="1">Grid</Label>
                     <Label Grid.Row="2">Alt</Label>
 
-                    <TextBox x:Name="EGridGrid" Grid.Column="1" Grid.Row="1" Text="{Binding Path=CurrentMission.Grid.Grid, Converter={dm:GridToStringConverter}}"></TextBox>
+                    <TextBox x:Name="EGridGrid" Grid.Column="1" Grid.Row="1" Text="{Binding Path=CurrentMission.Grid.Grid, Converter={dm:GridToStringConverter}, Mode=TwoWay}"></TextBox>
                     <TextBox x:Name="EGridAlt" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.Grid.Altitude}"></TextBox>
                 </Grid>
             </TabItem>
@@ -157,7 +163,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                
                 
             </Grid.RowDefinitions>
             
@@ -188,10 +194,116 @@
             <TextBox x:Name="EAdjRoundcount" Grid.Column="1" Grid.Row="7"></TextBox>
             <TextBox x:Name="EAdjPiece" Grid.Column="1" Grid.Row="8"></TextBox>
             <ComboBox x:Name="ESheath" Grid.Column="1" Grid.Row="9"></ComboBox>
+            
+
 
 
 
         </Grid>
+
+        <Label Grid.Row="2">FIRES</Label>
         
+        <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
+            <Button>Adjust Fire</Button>
+            <Button>Fire For Effect</Button>
+            
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Label>Rounds left:</Label>
+                <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">00</TextBlock>
+                <Label>Time to splash:</Label>
+                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" >00:00</TextBlock>
+                <Button >Call Shot</Button>
+            </StackPanel>
+        </DockPanel>
+        
+        <!--<StackPanel Grid.Row="3" Orientation="Horizontal">
+        
+        </StackPanel>-->
+        
+        <Label Grid.Row="4">Message To Observer</Label>
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Text="{Binding Path=CurrentMission.MTO}"/>
+        
+        
+
+        <Grid Grid.Row="6" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.ColumnSpan="2">Solutions</Label>
+
+            <Label Grid.Row="1" Grid.Column="0">Charge</Label>
+            <Label Grid.Row="2" Grid.Column="0">Deflection</Label>
+            <Label Grid.Row="3" Grid.Column="0">Elevation</Label>
+
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Charge}"></TextBox>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Deflection}"></TextBox>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Elevation}"></TextBox>
+            
+            <ComboBox Grid.Row="0" Grid.Column="1"
+                      ItemsSource="{Binding Path=CurrentMission.Solutions}"
+                      SelectedItem="{Binding Path=CurrentMission.CurrentSolution, Mode=TwoWay}"
+                      DisplayMemberPath="Charge"
+                      ></ComboBox>
+
+        </Grid>
+
+        <Grid Grid.Row="7" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.ColumnSpan="2">Adjustment</Label>
+
+            <Label Grid.Row="1" Grid.Column="0">Right</Label>
+            <Label Grid.Row="2" Grid.Column="0">Add</Label>
+            <Label Grid.Row="3" Grid.Column="0">Up</Label>
+
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="EAdjustRight"></TextBox>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="EAdjustAdd"></TextBox>
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="EAdjustUp"></TextBox>
+
+            <Button Grid.Row="3" Grid.Column="2">Apply</Button>
+
+            <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2">Adjusted Target Coordinates</Label>
+
+            <Label Grid.Row="1" Grid.Column="3">Grid</Label>
+            <Label Grid.Row="2" Grid.Column="3">Alt</Label>
+
+            <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Grid}"></TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Altitude}"></TextBlock>
+
+            <Button Grid.Row="4" Grid.Column="4" HorizontalAlignment="Right">Reset</Button>
+
+        </Grid>
+
+
+
+
+
+
+
+
     </Grid>
 </Window>

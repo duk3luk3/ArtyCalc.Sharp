@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace ArtyCalc.Model
 {
@@ -19,6 +20,11 @@ namespace ArtyCalc.Model
         private string notes;
         private Ammunition munition;
         private Fuze fuze;
+        private int adjustPieces;
+        private int adjustRounds;
+        private Coordinate adjustment = Coordinate.Zero;
+        private ObservableCollection<FireSolution> solutions = new ObservableCollection<FireSolution>();
+        private FireSolution currentSolution = null;
 
         #endregion
 
@@ -109,8 +115,99 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Fuze");
             }
         }
+        public int AdjustPieces
+        {
+            get { return adjustPieces; }
+            set
+            {
+                adjustPieces = value;
+                OnPropertyChanged("AdjustPieces");
+            }
+        }
+        public int AdjustRounds
+	{
+		get { return adjustRounds;}
+		set 
+		{
+			adjustRounds = value;
+			OnPropertyChanged("AdjustRounds");
+		}
+	}
+        public string MTO
+        {
+            get
+            {
+                return GetMTO();
+            }
+        }
+        public Coordinate Adjustment
+        {
+            get { return adjustment; }
+            set
+            {
+                adjustment = value;
+                OnPropertyChanged("Adjustment");
+            }
+        }
+        public Coordinate AdjustedCoords
+        {
+            get
+            {
+                return Coordinate.Add(GetCoords(), adjustment);
+            }
+        }
+        public ObservableCollection<FireSolution> Solutions
+	    {
+		    get { return solutions;}
+		    set 
+		    {
+		        solutions = value;
+		        OnPropertyChanged("Solutions");
+		    }
+	    }
+        public FireSolution CurrentSolution
+	    {
+		    get { return currentSolution;}
+		    set 
+		    {
+			    currentSolution = value;
+			    OnPropertyChanged("CurrentSolution");
+		    }
+	    }
 
         #endregion
+
+        public string GetMTO()
+        {
+            return battery.Callsign + ", battery adjust fire, " + adjustPieces + " pieces, " + adjustRounds + " rounds, Fuze " + fuze + " in effect, target number " + targetNumber + ", over.";
+        }
+
+        public string GetMTB()
+        {
+            return "Battery adjust fire, gun " + adjustPieces + " to fire adjust, " + adjustRounds + " round, Fuze " + fuze + " in effect, deflection";
+        }
+
+        public MissionSpec(Battery battery)
+        {
+            this.battery = battery;
+
+            PropertyChanged += MissionSpec_PropertyChanged;
+        }
+
+        void MissionSpec_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //If Coords changed, recalc fire solutions
+            if (e.PropertyName == "Coords" || e.PropertyName == "Ammunition")
+            {
+                solutions.Clear();
+                var new_solutions = BallisticModel.CalcFire(battery, this);
+
+                foreach (var s in new_solutions)
+                {
+                    solutions.Add(s);
+                }
+            }
+        }
 
         protected virtual void OnPropertyChanged(string name)
         {
@@ -121,11 +218,26 @@ namespace ArtyCalc.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public Battery battery { get; set; }
     }
 
     public class MissionGridSpec : MissionSpec
     {
-        private Coordinate grid = new Coordinate("",0);
+        public MissionGridSpec(Battery battery)
+            : base(battery)
+        {
+            grid.PropertyChanged += grid_PropertyChanged;
+        }
+
+        void grid_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Grid");
+            OnPropertyChanged("Coords");
+            OnPropertyChanged("AdjustedCoords");
+        }
+
+        private Coordinate grid = Coordinate.Zero;
 
         public Coordinate Grid
         {
@@ -133,8 +245,6 @@ namespace ArtyCalc.Model
             set
             {
                 grid = value;
-                Console.WriteLine("Coords changed");
-                OnPropertyChanged("Grid");
                 OnPropertyChanged("Coords");
             }
         }
@@ -148,6 +258,11 @@ namespace ArtyCalc.Model
 
     public class MissionPolarSpec : MissionSpec
     {
+        public MissionPolarSpec(Battery battery)
+            : base(battery)
+        {
+        }
+
         private KnownPoint observer;
 
         public KnownPoint Observer
@@ -206,6 +321,11 @@ namespace ArtyCalc.Model
 
     public class MissionShiftSpec : MissionSpec
     {
+        public MissionShiftSpec(Battery battery)
+            : base(battery)
+        {
+        }
+
         private KnownPoint point;
 
         public KnownPoint Point

@@ -128,7 +128,7 @@ namespace ArtyCalc
 
         private void BMissionPolar_Click(object sender, RoutedEventArgs e)
         {
-            var mission = new MissionPolarSpec();
+            var mission = new MissionPolarSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
             selectedBattery.CurrentMission = mission;
 
@@ -139,7 +139,7 @@ namespace ArtyCalc
 
         private void BMissionGrid_Click(object sender, RoutedEventArgs e)
         {
-            var mission = new MissionGridSpec();
+            var mission = new MissionGridSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
             selectedBattery.CurrentMission = mission;
 
@@ -150,7 +150,7 @@ namespace ArtyCalc
 
         private void BMissionShift_Click(object sender, RoutedEventArgs e)
         {
-            var mission = new MissionShiftSpec();
+            var mission = new MissionShiftSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
             selectedBattery.CurrentMission = mission;
 

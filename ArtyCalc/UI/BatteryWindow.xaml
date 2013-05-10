@@ -112,13 +112,17 @@
         <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="3"  Text="{Binding SelectedItem.Name, ElementName=EKPSelect}"          />
         <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="3"  Text="{Binding SelectedItem.Coord.Grid, Converter={d:GridToStringConverter}, ElementName=EKPSelect}"    />
         <TextBox x:Name="EKPAlt"  Grid.Row="9" Grid.Column="3"   Text="{Binding SelectedItem.Coord.Altitude, ElementName=EKPSelect}"/>
-        
-        <TextBox Grid.Row="10" Grid.ColumnSpan="4">MISSION LIST</TextBox>
+
+        <StackPanel Grid.Row="10" Grid.ColumnSpan="4" Orientation="Horizontal">
+            <Label>MISSION LIST</Label>
+            <CheckBox x:Name="MissionLockBox" Content="Locked" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        </StackPanel>
 
         <ListView Grid.Row="11" Grid.ColumnSpan="4" SelectionMode="Single"
 				DataContext="{Binding SelectedBattery}"
 				ItemsSource="{Binding Missions}"
                   SelectedItem="{Binding CurrentMission, Mode=TwoWay}"
+                  
                       >
             <ListView.View>
                 <GridView>
@@ -133,9 +137,6 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
-
-
     </Grid>
 
     <!--<Grid>

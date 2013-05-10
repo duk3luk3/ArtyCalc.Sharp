@@ -45,9 +45,9 @@ namespace ArtyCalc.Model
         private double gridX;
         private double gridY;
 
-        private float altitude;
+        private double altitude;
 
-        public float Altitude
+        public double Altitude
         {
             get { return altitude; }
             set
@@ -62,9 +62,44 @@ namespace ArtyCalc.Model
             get { return String.Format("{0,5:00000}{1,5:00000}", (int)gridX, (int)gridY); }
             set {
                 setGrid(value);
-                Console.WriteLine("Grid changed");
+                
                 OnPropertyChanged("Grid");
             }
+        }
+
+        public static double range(Coordinate c0, Coordinate c1)
+        {
+            var dx = c0.gridX - c1.gridX;
+            var dy = c0.gridY - c0.gridY;
+
+            var range2 = dx * dx + dy * dy;
+
+            return Math.Sqrt(range2);
+        }
+
+        public static double azimuth(Coordinate c0, Coordinate c1)
+        {
+            var range = Coordinate.range(c0, c1);
+            var az = Math.Acos((c0.gridY - c1.gridY) / range);
+            if (c0.gridX > c1.gridX)
+            {
+                az = 2 * Math.PI - az;
+            }
+
+            return az;
+        }
+
+        public static Coordinate Add(Coordinate c0, Coordinate c1)
+        {
+            return new Coordinate(c0.gridX + c1.gridX, c0.gridY + c1.gridY, c0.altitude + c1.altitude);
+        }
+
+        public Coordinate Shift(double angle, double add, double right, double up)
+        {
+            double north = Math.Cos(angle) * add + Math.Sin(angle) * right;
+            double east = Math.Sin(angle) * add + Math.Cos(angle) * right;
+
+            return new Coordinate(this.gridX + east, this.gridY + north, this.altitude + up);
         }
 
         private void setGrid(string gridStr)
@@ -103,6 +138,13 @@ namespace ArtyCalc.Model
             this.altitude = alt;
         }
 
+        public Coordinate(double x, double y, double alt)
+        {
+            this.altitude = alt;
+            this.gridX = x;
+            this.gridY = y;
+        }
+
         protected void OnPropertyChanged(string name)
         {
             if (PropertyChanged != null)
@@ -112,5 +154,7 @@ namespace ArtyCalc.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static Coordinate Zero { get { return new Coordinate(0, 0, 0); } }
     }
 }
