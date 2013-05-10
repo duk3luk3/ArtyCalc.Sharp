@@ -42,6 +42,8 @@ namespace ArtyCalc.Model
 
     public class Coordinate : INotifyPropertyChanged
     {
+        private int formatlen = 4;
+
         private double gridX;
         private double gridY;
 
@@ -59,7 +61,39 @@ namespace ArtyCalc.Model
 
         public string Grid
         {
-            get { return String.Format("{0,5:00000}{1,5:00000}", (int)gridX, (int)gridY); }
+            get
+            {
+
+                string fmt = "";
+
+                double div = 0;
+
+                switch (formatlen)
+                {
+                    case 1:
+                        fmt = "1:0";
+                        div = 10000;
+                        break;
+                    case 2:
+                        fmt = "2:00";
+                        div = 1000;
+                        break;
+                    case 3:
+                        fmt = "3:000";
+                        div = 100;
+                        break;
+                    case 4:
+                        fmt = "4:0000";
+                        div = 10;
+                        break;
+                    default:
+                        fmt = "5:00000";
+                        div = 1;
+                        break;
+                }
+                                
+                return String.Format("{0,"+fmt+"}{1,"+fmt+"}", (int)(gridX/div), (int)(gridY/div)); 
+            }
             set {
                 setGrid(value);
                 
@@ -113,6 +147,7 @@ namespace ArtyCalc.Model
             }
 
             int halfLength = gridStr.Length / 2;
+            formatlen = halfLength;
 
             string str0 = gridStr.Substring(0, halfLength);
             string str1 = gridStr.Substring(halfLength);
