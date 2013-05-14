@@ -26,6 +26,24 @@ namespace ArtyCalc.Model
         private ObservableCollection<FireSolution> solutions = new ObservableCollection<FireSolution>();
         private FireSolution currentSolution = null;
 
+        private BaseAngle adjustOTDir;
+        private double adjustAdd;
+        private double adjustRight;
+        private double adjustUp;
+
+        private int roundsLeft;
+
+        public int RoundsLeft
+        {
+            get { return roundsLeft; }
+            set
+            {
+                roundsLeft = value;
+                OnPropertyChanged("RoundsLeft");
+            }
+        }
+
+
         #endregion
 
         #region props
@@ -174,6 +192,42 @@ namespace ArtyCalc.Model
 			    OnPropertyChanged("CurrentSolution");
 		    }
 	    }
+        public BaseAngle AdjustOTDir
+        {
+            get { return adjustOTDir; }
+            set
+            {
+                adjustOTDir = value;
+                OnPropertyChanged("AdjustOTDir");
+            }
+        }
+        public double AdjustAdd
+        {
+            get { return adjustAdd; }
+            set
+            {
+                adjustAdd = value;
+                OnPropertyChanged("AdjustAdd");
+            }
+        }
+        public double AdjustRight
+        {
+            get { return adjustRight; }
+            set
+            {
+                adjustRight = value;
+                OnPropertyChanged("AdjustRight");
+            }
+        }
+        public double AdjustUp
+        {
+            get { return adjustUp; }
+            set
+            {
+                adjustUp = value;
+                OnPropertyChanged("AdjustUp");
+            }
+        }
 
         #endregion
 

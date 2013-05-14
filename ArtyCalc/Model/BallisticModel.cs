@@ -415,8 +415,9 @@ namespace ArtyCalc.Model
                     {
                         int elev = int.Parse(l[1]);
                         int dElev = int.Parse(l[2]);
-                        int time = (int)(float.Parse(l[3]) * 1000);
-                        int dTime = (int)(float.Parse(l[4]) * 1000);
+                        int dTime = (int)(float.Parse(l[3]) * 1000);
+                        int time = (int)(float.Parse(l[4]) * 1000);
+                        
 
                         rt.table.Add(new RangetableRow()
                         {

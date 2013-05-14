@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ArtyCalc.Model;
 using System.ComponentModel;
+using System.Timers;
+using System.Threading;
 
 namespace ArtyCalc
 {
@@ -56,10 +58,16 @@ namespace ArtyCalc
             }
         }
 
+        Thread uithread;
+
         public MissionWindow(BatteryWindow battery)
         {
             this.batterywindow = battery;
             this.batterywindow.SelectedBattery.PropertyChanged += new PropertyChangedEventHandler(MissionWindow_PropertyChanged);
+
+            t.Elapsed += t_Elapsed;
+
+            uithread = Thread.CurrentThread;
 
             InitializeComponent();
         }
@@ -103,6 +111,77 @@ namespace ArtyCalc
         {
             //mission.Ammunition = (Ammunition)EAmmo.SelectedItem;
             //Console.WriteLine("Changed item - selected item: " + EAmmo.SelectedItem + " - selected value: " + EAmmo.SelectedValue);
+        }
+
+        private void AdjustApply_Click(object sender, RoutedEventArgs e)
+        {
+            var m = batterywindow.SelectedBattery.CurrentMission;
+
+            m.Adjustment = m.Adjustment.Shift(m.AdjustOTDir.GetRadiansRepresentation(), m.AdjustAdd, m.AdjustRight, m.AdjustUp);
+        }
+
+        private void AdjustReset_Click(object sender, RoutedEventArgs e)
+        {
+            batterywindow.SelectedBattery.CurrentMission.Adjustment = Coordinate.Zero;
+        }
+
+        double timeLeft = 0;
+        System.Timers.Timer t = new System.Timers.Timer(100);
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentSolutionBox.IsEnabled = false;
+
+            var m = batterywindow.SelectedBattery.CurrentMission;
+
+            timeLeft = m.CurrentSolution.Time;
+          
+            t.Start();
+
+            TimerStopButton.IsEnabled = true;
+
+            if (m.RoundsLeft > 0)
+            {
+                m.RoundsLeft = m.RoundsLeft - 1;
+            }
+        }
+
+        public delegate void Tick();
+
+        void t_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Tick tick = delegate
+            {
+                timeLeft = timeLeft - 100;
+
+                var display = timeLeft / 1000;
+
+                SplashTimeBlock.Text = display.ToString("F2");
+            };
+
+            this.Dispatcher.Invoke(tick);
+        }
+
+        private void Timer_Stop(object sender, RoutedEventArgs e)
+        {
+            if (t.Enabled)
+            {
+                t.Stop();
+                ((Button)sender).Content = "Reset";
+            }
+            else
+            {
+                SplashTimeBlock.Text = "00:00";
+                ((Button)sender).IsEnabled = false;
+                ((Button)sender).Content = "Stop Timer";
+            }
+        }
+
+        private void Adjust_Fire_Click(object sender, RoutedEventArgs e)
+        {
+            var m = batterywindow.SelectedBattery.CurrentMission;
+
+            m.RoundsLeft = m.AdjustRounds;
         }
     }
 }

@@ -176,6 +176,20 @@
     <None Include="Rangetables\2b14\2b14_82mm_WP_Charge6">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge0" />
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge1" />
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge2" />
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge3" />
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge4" />
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge1" />
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge2" />
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge3" />
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge4" />
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge0" />
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge1" />
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge2" />
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge3" />
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge4" />
     <None Include="Rangetables\M252\m252_81mm_HE_Charge0">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
