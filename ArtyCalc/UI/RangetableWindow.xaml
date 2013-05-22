@@ -1,0 +1,41 @@
+﻿<Window x:Class="ArtyCalc.UI.RangetableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="clr-namespace:ArtyCalc.Model"
+        DataContext="{Binding RelativeSource={RelativeSource self}}"
+        Title="Rangetables">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="batteryTypeData"
+                    MethodName="GetDefinedWeapons" 
+                    ObjectType="{x:Type d:Weapon}"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+
+        <ComboBox Grid.Row="0" ItemsSource="{Binding Source={StaticResource batteryTypeData}}" SelectedItem="{Binding SelectedWeapon}" DisplayMemberPath="Designation"></ComboBox>
+        <ComboBox Grid.Row="1" ItemsSource="{Binding Path=SelectedWeapon.Munitions}" SelectedItem="{Binding SelectedMunition}" DisplayMemberPath="Designation"></ComboBox>
+        <ComboBox Grid.Row="2" ItemsSource="{Binding Path=SelectedMunition.Rangetables}" SelectedItem="{Binding SelectedRangetable}" DisplayMemberPath="Charge"></ComboBox>
+
+        <ListView Grid.Row="3" Grid.ColumnSpan="4" SelectionMode="Single"
+                  ItemsSource="{Binding Path=SelectedRangetable.Table}"
+                      >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Range}" Header="Range"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Elevation}" Header="Elevation"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding ElevationAdjust}" Header="Elevation Adjust per -100m"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Time}" Header="Time"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding TimeAdjust}" Header="Time Adjust per -100m"/>
+                    
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+    </Grid>
+</Window>

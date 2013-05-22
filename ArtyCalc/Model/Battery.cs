@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Xml;
 
 namespace ArtyCalc.Model
 {
@@ -25,7 +27,7 @@ namespace ArtyCalc.Model
 
 
         private MissionSpec currentMission;
-        
+
 
         #region Properties
 
@@ -71,7 +73,7 @@ namespace ArtyCalc.Model
             set
             {
                 bWeapon = value;
-                OnPropertyChanged("BType");
+                OnPropertyChanged("BWeapon");
             }
         }
         public Coordinate Coords
@@ -81,7 +83,7 @@ namespace ArtyCalc.Model
             {
                 coords = value;
 
-                OnPropertyChanged("Coords");                
+                OnPropertyChanged("Coords");
             }
         }
 
@@ -143,7 +145,7 @@ namespace ArtyCalc.Model
             }
         }
         #endregion
-        
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -169,5 +171,14 @@ namespace ArtyCalc.Model
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
         }
+
+        public void Save(XmlWriter wr)
+        {
+            wr.WriteStartElement("Battery");
+            wr.WriteElementString("Weapon", BWeapon.Designation);
+            wr.WriteElementString("Callsign", Callsign);
+            
+        }
+
     }
 }

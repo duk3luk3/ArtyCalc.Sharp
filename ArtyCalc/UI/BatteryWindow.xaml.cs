@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using ArtyCalc.Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using ArtyCalc.UI;
 
 namespace ArtyCalc
 {
@@ -23,6 +24,7 @@ namespace ArtyCalc
     public partial class BatteryWindow : Window, INotifyPropertyChanged
     {
         private MissionWindow mw;
+        private RangetableWindow rw;
 
         private ObservableCollection<Battery> batteryList = new ObservableCollection<Battery>();
         public ObservableCollection<Battery> BatteryList
@@ -82,6 +84,7 @@ namespace ArtyCalc
             SelectedBattery = b;
 
             mw = new MissionWindow(this);
+            rw = new RangetableWindow();
             
             InitializeComponent();
         }
@@ -157,6 +160,30 @@ namespace ArtyCalc
             mw.Show();
             mw.Left = this.Left + this.Width;
             mw.Top = this.Top;
+        }
+
+        private void BRangetables_Click(object sender, RoutedEventArgs e)
+        {
+            rw.Show();
+        }
+
+        public bool closing = false;
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            closing = true;
+            mw.Close();
+            App.Current.Shutdown(0);
+        }
+
+        private void BObserverDel_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedBattery.Observers.Remove(SelectedObserver);
+        }
+
+        private void BKnownpointDel_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedBattery.Knownpoints.Remove(SelectedPoint);
         }
     }
 }

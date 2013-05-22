@@ -80,7 +80,7 @@ namespace ArtyCalc.Model
             range = Coordinate.range(battery.Coords, mission.AdjustedCoords);
             azimuth = Coordinate.azimuth(battery.Coords, mission.AdjustedCoords);
 
-            up = mission.Coords.Altitude - battery.Coords.Altitude;
+            up = mission.AdjustedCoords.Altitude - battery.Coords.Altitude;
 
             return new Tuple<double, double, double>(range, azimuth, up);
         }
@@ -104,12 +104,23 @@ namespace ArtyCalc.Model
             var azimuth = rangedata.Item2;
             var up = rangedata.Item3;
 
-            var deflection = (3200.0 + (azimuth - battery.Dir.GetRadiansRepresentation())) % 6400.0;
+            var deflection = (Math.PI + (azimuth - battery.Dir.GetRadiansRepresentation()));
+            if (deflection < 0)
+                deflection = deflection + (2 * Math.PI);
+
+            if (deflection > 2 * Math.PI)
+                deflection = deflection - (2 * Math.PI);
+
+            MilAngle m = new MilAngle();
+            m.SetRadiansRepresentation(deflection);
+
+
+            var rangeArr = new float[] { (float)rangedata.Item1 };
 
             foreach (var rt in munition.Rangetables)
             {
-                var min = rt.table.Min(rw => rw.Range);
-                var max = rt.table.Max(rw => rw.Range);
+                var min = rt.Table.Min(rw => rw.Range);
+                var max = rt.Table.Max(rw => rw.Range);
 
                 if (min > rangedata.Item1 || max < rangedata.Item1)
                 {
@@ -121,18 +132,26 @@ namespace ArtyCalc.Model
                         }
                         );
                     continue;
-                   }
+                }
 
-                var elev = rt.ElevSpline.Eval(new float[] { (float)rangedata.Item1 });
-                var time = rt.TimeSpline.Eval(new float[] { (float)rangedata.Item1 });
+                var elev = rt.ElevSpline.Eval(rangeArr);
+                var time = rt.TimeSpline.Eval(rangeArr);
                 //TODO: adjust for height diff
+                var elevAdjust = rt.ElevAdjustSpline.Eval(rangeArr);
+                var timeAdjust = rt.TimeAdjustSpline.Eval(rangeArr);
+                
+                //adjust is per -100 dAlt
+                var elevAdjustVal = elevAdjust[0] * up / -100.0;
+                var timeAdjustVal = timeAdjust[0] * up / -100.0;
+
+                
 
                 res.Add(new FireSolution()
                 {
                     Charge = rt.Charge,
-                    Deflection = deflection,
-                    Elevation = elev[0],
-                    Time = time[0]
+                    Deflection = m.GetInternalRepresentation(),
+                    Elevation = elev[0] + elevAdjustVal,
+                    Time = time[0] + timeAdjustVal
                 }
                 );                
             }
@@ -144,104 +163,265 @@ namespace ArtyCalc.Model
     public class Weapon
     {
 #if DEBUG
-        static string fi = @"C:\Users\luke\Documents\Visual Studio 2010\Projects\ArtyCalc\ArtyCalc\bin\Debug";
+        static string fi = @"C:\Users\luke\Documents\Visual Studio 2010\Projects\ArtyCalc\ArtyCalc\bin\Debug\";
 #else
         const string fi = "";
 #endif
 
 
         public static ObservableCollection<Weapon> DefinedWeapons = new ObservableCollection<Weapon>(new Weapon[] {
-            new Weapon() {designation = "M252 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
-                new Ammunition() { Designation = "HE", Rangetables = new List<Rangetable>(
+            new Weapon() {designation = "Tampella 120mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
+                new Ammunition() { Designation = "HE", Lot="DM61 (Proximity) / DM11A5 (Quick)", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_HE_Charge4",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge4",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
-                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Delay", HasTimeFuze=false }
+                        new Fuze() { Designation = "Proximity Burst", Short="Proximity", HasTimeFuze=false },
+                        new Fuze() { Designation = "Impact Burst", Short="Quick", HasTimeFuze=false }
                     }
                     )
                 },
-                new Ammunition() { Designation = "WP", Rangetables = new List<Rangetable>(
+                new Ammunition() { Designation = "HC Smoke", Lot="DM35", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_WP_Charge4",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge4",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
-                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
                     }
                     )
                 },
-                new Ammunition() { Designation = "Illum", Rangetables = new List<Rangetable>(
+                new Ammunition() { Designation = "Illum", Lot="DM26", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\M252\\m252_81mm_Illum_Charge4",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge4",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
-                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
                     }
                     )
                 }
             })
             },
-            new Weapon() {designation = "2B14 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
-                new Ammunition() { Designation = "HE", Rangetables = new List<Rangetable>(
+            new Weapon() {designation = "M252 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
+                new Ammunition() { Designation = "HE", Lot="M821A2", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_HE_Charge4",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge4",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
-                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Delay", HasTimeFuze=false }
+                        new Fuze() { Designation = "Impact Burst", Short="Quick", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", Short="Near-Surface", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", Short="Proximity", HasTimeFuze=false },
+                        new Fuze() { Designation = "Delay", Short="Delay", HasTimeFuze=false }
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "WP", Lot="M375A3", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Point Detonate", Short="Quick", HasTimeFuze=false }
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "Illum", Lot="M853A1", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                }
+            })
+            },
+            new Weapon() {designation = "2B14 82mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
+                new Ammunition() { Designation = "HE", Lot="VO-832DU", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge6",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", Short="Quick", HasTimeFuze=false }
                     }
                     )
                 },
                 new Ammunition() { Designation = "WP", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_WP_Charge4",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge6",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
-                        new Fuze() { Designation = "Impact Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Near-Surface Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Proximity Burst", HasTimeFuze=false },
-                        new Fuze() { Designation = "Time Fuze", HasTimeFuze=true}
+                        new Fuze() { Designation = "Point Detonate", Short="Quick", HasTimeFuze=false }
                     }
                     )
                 },
                 new Ammunition() { Designation = "Illum", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "\\Rangetables\\2B14\\2b14_82mm_Illum_Charge3",FileMode.Open))
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge3",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                }
+            })
+            },
+            new Weapon() {designation = "M224 60mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
+                new Ammunition() { Designation = "HE", Lot="M720A1", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Impact Burst", Short="Quick", HasTimeFuze=false },
+                        new Fuze() { Designation = "Near-Surface Burst", Short="Near-Surface", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", Short="Proximity", HasTimeFuze=false },
+                        new Fuze() { Designation = "Delay", Short="Delay", HasTimeFuze=false }
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "M224 WP", Lot="M722", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge0",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Point Detonate", Short="Quick", HasTimeFuze=false }
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "M224 Illum", Lot="M721", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge4",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                }
+            })
+            },
+            new Weapon() {designation = "M119 105mm Gun", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
+                new Ammunition() { Designation = "DPICM", Lot="M916", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge6",FileMode.Open)),
+                        Rangetable.FromStream(7,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge7",FileMode.Open)),
+                        Rangetable.FromStream(8,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge8",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "HE", Lot="M1", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge6",FileMode.Open)),
+                        Rangetable.FromStream(7,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge7",FileMode.Open)),
+                        Rangetable.FromStream(8,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge8",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Point Detonate", Short="Quick", HasTimeFuze=false },
+                        new Fuze() { Designation = "Proximity Burst", Short="Proximity", HasTimeFuze=false },
+                        new Fuze() { Designation = "Delay", Short="Delay", HasTimeFuze=false },
+                        new Fuze() { Designation = "Time Fuze", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "Bursting WP / HC Smoke", Lot="M60A2 / M84A1",  Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge6",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge7",FileMode.Open))
+                    }
+                    ),
+                    Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
+                        new Fuze() { Designation = "Point Detonate (WP only)", Short="Quick", HasTimeFuze=false },
+                        new Fuze() { Designation = "Time Fuze (HC Smoke only)", Short="VT", HasTimeFuze=true}
+                    }
+                    )
+                },
+                new Ammunition() { Designation = "M119 Illum", Lot="M314A3", Rangetables = new List<Rangetable>(
+                    new Rangetable[] {
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge1",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge2",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge3",FileMode.Open)),
+                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge4",FileMode.Open)),
+                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge5",FileMode.Open)),
+                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge6",FileMode.Open)),
+                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge7",FileMode.Open))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -273,6 +453,8 @@ namespace ArtyCalc.Model
     public class Ammunition
     {
         private string designation;
+
+        public string Lot { get; set; }
 
         public string Designation
         {
@@ -306,6 +488,7 @@ namespace ArtyCalc.Model
     public class Fuze
     {
         public string Designation { get; set; }
+        public string Short { get; set; }
         public bool HasTimeFuze { get; set; }
 
         public override string ToString()
@@ -351,14 +534,14 @@ namespace ArtyCalc.Model
                 return elevAdjustSpline;
             }
         }
-        public CubicSpline RangeSpline
+        public CubicSpline TimeAdjustSpline
         {
             get
             {
-                if (elevSpline == null)
+                if (timeAdjustSpline == null)
                     InitSpline();
 
-                return elevSpline;
+                return timeAdjustSpline;
             }
         }
 
@@ -391,13 +574,24 @@ namespace ArtyCalc.Model
             timeAdjustSpline.Fit(x, dTime);
         }
 
-        public int Charge;
+        public int Charge {get; private set;}
 
-        public List<RangetableRow> table = new List<RangetableRow>();
+        private List<RangetableRow> table = new List<RangetableRow>();
+
+        public List<RangetableRow> Table
+        {
+            get { return table; }
+            set { table = value; }
+        }
 
         public Rangetable(int charge)
         {
             this.Charge = charge;
+        }
+
+        public override string ToString()
+        {
+            return "Charge " + Charge;
         }
 
         public static Rangetable FromStream(int charge, Stream source)
@@ -415,8 +609,8 @@ namespace ArtyCalc.Model
                     {
                         int elev = int.Parse(l[1]);
                         int dElev = int.Parse(l[2]);
-                        int dTime = (int)(float.Parse(l[3]) * 1000);
-                        int time = (int)(float.Parse(l[4]) * 1000);
+                        int dTime = (int)(double.Parse(l[3]) * 1000);
+                        int time = (int)(double.Parse(l[4]) * 1000);
                         
 
                         rt.table.Add(new RangetableRow()
@@ -438,10 +632,10 @@ namespace ArtyCalc.Model
 
     public struct RangetableRow
     {
-        public int Range;
-        public int Elev;
-        public int ElevationAdjust;
-        public int Time;
-        public int TimeAdjust;
+        public int Range { get; set; }
+        public int Elev { get; set; }
+        public int ElevationAdjust { get; set; }
+        public int Time { get; set; }
+        public int TimeAdjust { get; set; }
     }
 }

@@ -66,6 +66,23 @@ namespace ArtyCalc.Model
         {
             this.value = RadToDeg(val);
         }
+
+        public static BaseAngle TryParse(string s)
+        {
+            if (s[0] == 'd')
+            {
+                var b = new DegreeAngle();
+                b.value = double.Parse(s.Substring(1));
+                return b;
+            }
+
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return "d" + value;
+        }
     }
 
     public class RadAngle : BaseAngle
@@ -89,6 +106,23 @@ namespace ArtyCalc.Model
         public override void SetRadiansRepresentation(double val)
         {
             this.value = val;
+        }
+
+        public static BaseAngle TryParse(string s)
+        {
+            if (s[0] == 'r')
+            {
+                var b = new RadAngle();
+                b.value = double.Parse(s.Substring(1));
+                return b;
+            }
+
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return "r" + value;
         }
     }
 
@@ -114,6 +148,23 @@ namespace ArtyCalc.Model
         {
             this.value = RadToMil(val);
         }
+
+        public static BaseAngle TryParse(string s)
+        {
+            if (s[0] == 'm')
+            {
+                var b = new MilAngle();
+                b.value = double.Parse(s.Substring(1));
+                return b;
+            }
+
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return "m" + value;
+        }
     }
 
     [ValueConversion(typeof(string), typeof(BaseAngle))]
@@ -127,50 +178,31 @@ namespace ArtyCalc.Model
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
-                return null;
+                return DependencyProperty.UnsetValue;
 
             string s = value as string;
 
             if (s == "")
-                return null;
+                return DependencyProperty.UnsetValue;
 
             BaseAngle val = null;
 
-            char d = s[0];
-
-            //is d a digit?
-            if (d > 47 && d < 58)
+            val = DegreeAngle.TryParse(s);
+            if (val == null)
+                val = RadAngle.TryParse(s);
+            if (val == null)
+                val = MilAngle.TryParse(s);
+            if (val == null)
             {
-                val = BaseAngle.Create<MilAngle>(double.Parse(s));
+                double d;
+                if (double.TryParse(s,out d))
+                    val = BaseAngle.Create<MilAngle>(double.Parse(s));
             }
+
+            if (val == null)
+                return DependencyProperty.UnsetValue;
             else
-            {
-                double v;
-                if (double.TryParse(s.Substring(1), out v))
-                {
-
-                    switch (d)
-                    {
-                        case 'd':
-                            val = BaseAngle.Create<DegreeAngle>(v);
-                            break;
-                        case 'm':
-                            val = BaseAngle.Create<MilAngle>(v);
-                            break;
-                        case 'r':
-                            val = BaseAngle.Create<RadAngle>(v);
-                            break;
-                        default:
-                            throw new InvalidOperationException("Invalid angle string");
-                    }
-                }
-                else
-                {
-                    return DependencyProperty.UnsetValue;
-                }
-            }
-
-            return val;
+                return val;
         }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

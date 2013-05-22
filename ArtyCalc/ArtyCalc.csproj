@@ -51,9 +51,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ArtyCalc.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +79,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\NatoAlphabet.cs" />
+    <Compile Include="UI\RangetableWindow.xaml.cs">
+      <DependentUpon>RangetableWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="UI\BatteryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -91,6 +103,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\MissionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RangetableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -176,20 +192,138 @@
     <None Include="Rangetables\2b14\2b14_82mm_WP_Charge6">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Rangetables\M224\m224_60mm_HE_Charge0" />
-    <None Include="Rangetables\M224\m224_60mm_HE_Charge1" />
-    <None Include="Rangetables\M224\m224_60mm_HE_Charge2" />
-    <None Include="Rangetables\M224\m224_60mm_HE_Charge3" />
-    <None Include="Rangetables\M224\m224_60mm_HE_Charge4" />
-    <None Include="Rangetables\M224\m224_60mm_Illum_Charge1" />
-    <None Include="Rangetables\M224\m224_60mm_Illum_Charge2" />
-    <None Include="Rangetables\M224\m224_60mm_Illum_Charge3" />
-    <None Include="Rangetables\M224\m224_60mm_Illum_Charge4" />
-    <None Include="Rangetables\M224\m224_60mm_WP_Charge0" />
-    <None Include="Rangetables\M224\m224_60mm_WP_Charge1" />
-    <None Include="Rangetables\M224\m224_60mm_WP_Charge2" />
-    <None Include="Rangetables\M224\m224_60mm_WP_Charge3" />
-    <None Include="Rangetables\M224\m224_60mm_WP_Charge4" />
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge7">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_DPICM_Charge8">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge7">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_HE_Charge8">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_Illum_Charge7">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M119\m119_105mm_WP_Charge7">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_HE_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_Illum_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\M224\m224_60mm_WP_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Rangetables\M252\m252_81mm_HE_Charge0">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -232,6 +366,51 @@
     <None Include="Rangetables\M252\m252_81mm_WP_Charge4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Rangetables\tampella\tampella_120mm_HE_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_HE_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_HE_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_HE_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_HE_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_Illum_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_Illum_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_Illum_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_Illum_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_Illum_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_WP_Charge0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_WP_Charge1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_WP_Charge2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_WP_Charge3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rangetables\tampella\tampella_120mm_WP_Charge4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeometryLib\GeometryLib.csproj">
@@ -261,7 +440,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

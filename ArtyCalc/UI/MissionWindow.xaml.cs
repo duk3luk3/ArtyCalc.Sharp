@@ -74,7 +74,7 @@ namespace ArtyCalc
 
         void MissionWindow_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Mission")
+            if (e.PropertyName == "CurrentMission")
             {
                 var Mission = batterywindow.SelectedBattery.CurrentMission;
 
@@ -92,7 +92,6 @@ namespace ArtyCalc
                     {
                         EMissionType.SelectedIndex = 2;
                     }
-
                 }
             }
         }
@@ -174,6 +173,7 @@ namespace ArtyCalc
                 SplashTimeBlock.Text = "00:00";
                 ((Button)sender).IsEnabled = false;
                 ((Button)sender).Content = "Stop Timer";
+                CurrentSolutionBox.IsEnabled = true;
             }
         }
 
@@ -182,6 +182,13 @@ namespace ArtyCalc
             var m = batterywindow.SelectedBattery.CurrentMission;
 
             m.RoundsLeft = m.AdjustRounds;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+
+
+            e.Cancel = !batterywindow.closing;
         }
     }
 }

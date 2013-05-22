@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dm="clr-namespace:ArtyCalc.Model"
         Title="MissionWindow" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignWidth="433" SizeToContent="WidthAndHeight"
-        DataContext="{Binding RelativeSource={RelativeSource self}, Path=BatteryWindow.SelectedBattery}" WindowStyle="ToolWindow">
+        DataContext="{Binding RelativeSource={RelativeSource self}, Path=BatteryWindow.SelectedBattery}" WindowStyle="ToolWindow" ShowInTaskbar="False" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -18,10 +18,11 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         
         <TabControl BorderThickness="0" x:Name="EMissionType">
-            <!--<TabControl.Resources>
+            <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -29,7 +30,7 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-            </TabControl.Resources>-->
+            </TabControl.Resources>
             
             <TabItem Header="Grid">
                 <Grid>
@@ -74,8 +75,8 @@
                     <Label Grid.Column="0" Grid.Row="4">Add Alt:</Label>
                     
                     
-                    <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding Path=CurrentMission.Observer.Name}"></TextBox>
-                    <TextBox x:Name="EPolarOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.OTDir, Converter={dm:AngleToStringConverter}}"></TextBox>
+                    <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Observers}" SelectedItem="{Binding Path=CurrentMission.Observer, Mode=TwoWay}" DisplayMemberPath="Name"></ComboBox>
+                    <TextBox x:Name="EPolarOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.OTDir, Converter={dm:AngleToStringConverter}}" Height="26" VerticalAlignment="Bottom"></TextBox>
                     <TextBox x:Name="EPolarRange" Grid.Column="1" Grid.Row="3" Text="{Binding Path=CurrentMission.Range}"></TextBox>
                     <TextBox x:Name="EPolarAddAlt" Grid.Column="1" Grid.Row="4" Text="{Binding Path=CurrentMission.DAlt}"></TextBox>
                     
@@ -108,7 +109,8 @@
                     <Label Grid.Column="0" Grid.Row="5">Up (Down)</Label>
 
 
-                    <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding Path=CurrentMission.Point.Name}"></TextBox>
+                    <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Knownpoints}" SelectedItem="{Binding Path=CurrentMission.Point, Mode=TwoWay}" DisplayMemberPath="Name"></ComboBox>
+                    
                     <TextBox x:Name="EShiftOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.OTDir, Converter={dm:AngleToStringConverter}}"></TextBox>
                     <TextBox x:Name="EShiftRight" Grid.Column="1" Grid.Row="3" Text="{Binding Path=CurrentMission.Right}"></TextBox>
                     <TextBox x:Name="EShiftAdd" Grid.Column="1" Grid.Row="4" Text="{Binding Path=CurrentMission.Add}"></TextBox>
@@ -189,10 +191,10 @@
                       SelectionChanged="EAmmo_SelectionChanged"
                       ></ComboBox>
             <ComboBox x:Name="EFuze" Grid.Column="1" Grid.Row="4" ItemsSource="{Binding Path=CurrentMission.Ammunition.Fuzes}" DisplayMemberPath="Designation" SelectedItem="{Binding Path=CurrentMission.Fuze}"></ComboBox>
-            <TextBox x:Name="EFuzetime" Grid.Column="1" Grid.Row="5"></TextBox>
-            <TextBox x:Name="ERoundcount" Grid.Column="1" Grid.Row="6"></TextBox>
-            <TextBox x:Name="EAdjRoundcount" Grid.Column="1" Grid.Row="7"></TextBox>
-            <TextBox x:Name="EAdjPiece" Grid.Column="1" Grid.Row="8"></TextBox>
+            <TextBox x:Name="EFuzetime" Grid.Column="1" Grid.Row="5" Text="{Binding Path=CurrentMission.FuzeTime}"></TextBox>
+            <TextBox x:Name="ERoundcount" Grid.Column="1" Grid.Row="6" Text="{Binding Path=CurrentMission.Rounds}"></TextBox>
+            <TextBox x:Name="EAdjRoundcount" Grid.Column="1" Grid.Row="7" Text="{Binding Path=CurrentMission.AdjustRounds}"></TextBox>
+            <TextBox x:Name="EAdjPiece" Grid.Column="1" Grid.Row="8" Text="{Binding Path=CurrentMission.AdjustPieces}"></TextBox>
             <ComboBox x:Name="ESheath" Grid.Column="1" Grid.Row="9"></ComboBox>
             
 
@@ -245,7 +247,7 @@
 
             <Label Grid.Row="1" Grid.Column="0">Charge</Label>
             <Label Grid.Row="2" Grid.Column="0">Deflection</Label>
-            <Label Grid.Row="3" Grid.Column="0">Elevation</Label>
+            <Label Grid.Row="3" Grid.Column="0">Quadrant</Label>
 
             <Label Grid.Row="1" Grid.Column="2">TOF</Label>
 
@@ -271,6 +273,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -287,10 +290,10 @@
             <Label Grid.Row="3" Grid.Column="0">Add</Label>
             <Label Grid.Row="4" Grid.Column="0">Up</Label>
 
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="EAdjustOTDir" Text="{Binding Path=CurrentMission.AdjustOTDir, UpdateSourceTrigger=PropertyChanged, Converter={dm:AngleToStringConverter}}"></TextBox>
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="EAdjustRight" Text="{Binding Path=CurrentMission.AdjustRight, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBox Grid.Row="3" Grid.Column="1" x:Name="EAdjustAdd" Text="{Binding Path=CurrentMission.AdjustAdd, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBox Grid.Row="4" Grid.Column="1" x:Name="EAdjustUp" Text="{Binding Path=CurrentMission.AdjustUp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="EAdjustOTDir" Text="{Binding Path=CurrentMission.AdjustOTDir, UpdateSourceTrigger=LostFocus, Converter={dm:AngleToStringConverter}}"></TextBox>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="EAdjustRight" Text="{Binding Path=CurrentMission.AdjustRight, UpdateSourceTrigger=LostFocus}"></TextBox>
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="EAdjustAdd" Text="{Binding Path=CurrentMission.AdjustAdd, UpdateSourceTrigger=LostFocus}"></TextBox>
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="EAdjustUp" Text="{Binding Path=CurrentMission.AdjustUp, UpdateSourceTrigger=LostFocus}"></TextBox>
 
             
             <Button Click="AdjustApply_Click"  Grid.Row="4" Grid.Column="2">Apply</Button>
@@ -299,12 +302,27 @@
 
             <Label Grid.Row="1" Grid.Column="3">Grid</Label>
             <Label Grid.Row="2" Grid.Column="3">Alt</Label>
+            <Label Grid.Row="3" Grid.Column="3">Range</Label>
+            <Label Grid.Row="4" Grid.Column="3">Azimuth</Label>
 
             <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Grid}"></TextBlock>
             <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Altitude}"></TextBlock>
 
-            <Button Click="AdjustReset_Click" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Right">Reset</Button>
+            <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Path=CurrentMission.Distance}"></TextBlock>
+            <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Path=CurrentMission.Azimuth, Converter={dm:AngleToStringConverter}}"></TextBlock>
 
+            <Button Click="AdjustReset_Click" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Right">Reset</Button>
+
+        </Grid>
+        
+        <Grid Grid.Row="8" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Label Grid.Row="0">Message To Line</Label>
+            <TextBlock Grid.Row="1" Text="{Binding Path=CurrentMission.MTB}"></TextBlock>
         </Grid>
 
 

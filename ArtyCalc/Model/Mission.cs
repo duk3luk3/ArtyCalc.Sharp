@@ -25,7 +25,7 @@ namespace ArtyCalc.Model
         private Coordinate adjustment = Coordinate.Zero;
         private ObservableCollection<FireSolution> solutions = new ObservableCollection<FireSolution>();
         private FireSolution currentSolution = null;
-
+        
         private BaseAngle adjustOTDir;
         private double adjustAdd;
         private double adjustRight;
@@ -33,6 +33,34 @@ namespace ArtyCalc.Model
 
         private int roundsLeft;
 
+        private int rounds;
+
+        public int Rounds
+        {
+            get { return rounds; }
+            set
+            {
+                rounds = value;
+                OnPropertyChanged("Rounds");
+            }
+        }
+
+        private string fuzeTime;
+
+        public string FuzeTime
+        {
+            get { return fuzeTime; }
+            set
+            {
+                fuzeTime = value;
+                OnPropertyChanged("FuzeTime");
+            }
+        }
+
+
+        #endregion
+
+        #region props
         public int RoundsLeft
         {
             get { return roundsLeft; }
@@ -42,11 +70,26 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("RoundsLeft");
             }
         }
+        public double Distance
+        {
+            get
+            {
+                return BallisticModel.RangeAzimuthUp(this.battery, this).Item1;
+            }
+        }
+        public BaseAngle Azimuth
+        {
+            get
+            {
+                var az = BallisticModel.RangeAzimuthUp(this.battery, this).Item2;
 
+                var angle = new MilAngle();
 
-        #endregion
+                angle.SetRadiansRepresentation(az);
 
-        #region props
+                return angle;
+            }
+        }
         public Coordinate Coords
         {
             get { return GetCoords(); }
@@ -158,6 +201,13 @@ namespace ArtyCalc.Model
                 return GetMTO();
             }
         }
+        public string MTB
+        {
+            get
+            {
+                return GetMTB();
+            }
+        }
         public Coordinate Adjustment
         {
             get { return adjustment; }
@@ -165,6 +215,7 @@ namespace ArtyCalc.Model
             {
                 adjustment = value;
                 OnPropertyChanged("Adjustment");
+                OnPropertyChanged("AdjustedCoords");
             }
         }
         public Coordinate AdjustedCoords
@@ -192,6 +243,7 @@ namespace ArtyCalc.Model
 			    OnPropertyChanged("CurrentSolution");
 		    }
 	    }
+        
         public BaseAngle AdjustOTDir
         {
             get { return adjustOTDir; }
@@ -238,28 +290,83 @@ namespace ArtyCalc.Model
 
         public string GetMTB()
         {
-            return "Battery adjust fire, gun " + adjustPieces + " to fire adjust, " + adjustRounds + " round, Fuze " + fuze + " in effect, deflection";
+            if (Ammunition != null && CurrentSolution != null && Fuze != null)
+            {
+
+                string pieces = "";
+                string ineffect = "";
+                if (adjustRounds > 0)
+                {
+                    pieces = "Battery Adjust, Gun Number " + AdjustPieces + " " + AdjustRounds + " Rounds";
+                    ineffect = "" + Rounds + ", " + Fuze.Designation + " in effect";
+                }
+                else
+                    pieces = "Battery " + Rounds + " Rounds";
+
+                string shell = "Shell " + Ammunition.Designation;
+                string charge = "Charge " + CurrentSolution.Charge;
+                string fuze = "Fuze " + Fuze.Designation;
+
+                if (Fuze.HasTimeFuze)
+                {
+                    fuze = fuze + ", Time " + fuzeTime;
+                }
+
+                return "Firemission! " + pieces + "! " + shell + "! " + charge + "! " + fuze + " Deflection " + CurrentSolution.Deflection + "! " + "Quadrant " + CurrentSolution.Elevation + "! " + ineffect;
+            }
+
+            return "";
         }
 
         public MissionSpec(Battery battery)
         {
             this.battery = battery;
 
+            this.targetNumber = battery.Prefix + battery.Missions.Count;
+
             PropertyChanged += MissionSpec_PropertyChanged;
         }
 
         void MissionSpec_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //If Coords changed, recalc fire solutions
-            if (e.PropertyName == "Coords" || e.PropertyName == "Ammunition")
+            if (e.PropertyName == "Coords")
             {
-                solutions.Clear();
+                OnPropertyChanged("AdjustedCoords");
+                OnPropertyChanged("Adjustment");
+                OnPropertyChanged("Distance");
+                OnPropertyChanged("Azimuth");
+                OnPropertyChanged("MTO");
+                OnPropertyChanged("MTB");
+            }
+            if (e.PropertyName == "Ammunition" || e.PropertyName == "Fuze" || e.PropertyName == "CurrentSolution")
+            {
+                OnPropertyChanged("MTO");
+                OnPropertyChanged("MTB");
+            }
+
+            //If Coords changed, recalc fire solutions
+            if (e.PropertyName == "AdjustedCoords" || e.PropertyName == "Ammunition")
+            {
+                //solutions.Clear();
                 var new_solutions = BallisticModel.CalcFire(battery, this);
 
-                foreach (var s in new_solutions)
+                if (e.PropertyName == "AdjustedCoords" && solutions.Count == new_solutions.Count)
                 {
-                    solutions.Add(s);
+                    for (int i = 0; i < solutions.Count; i++)
+                    {
+                        solutions[i].Deflection = new_solutions[i].Deflection;
+                        solutions[i].Elevation = new_solutions[i].Elevation;
+                        solutions[i].Time = new_solutions[i].Time;
+                    }
                 }
+                else
+                {
+                    solutions.Clear();
+
+                    foreach (var s in new_solutions)
+                        solutions.Add(s);
+                }
+                OnPropertyChanged("Solution");
             }
         }
 
@@ -288,7 +395,6 @@ namespace ArtyCalc.Model
         {
             OnPropertyChanged("Grid");
             OnPropertyChanged("Coords");
-            OnPropertyChanged("AdjustedCoords");
         }
 
         private Coordinate grid = Coordinate.Zero;
@@ -318,7 +424,9 @@ namespace ArtyCalc.Model
         }
 
         private KnownPoint observer;
-
+        private BaseAngle otdir = new MilAngle();
+        private double range;
+        private double dAlt;
         public KnownPoint Observer
         {
             get { return observer; }
@@ -326,22 +434,20 @@ namespace ArtyCalc.Model
             {
                 observer = value;
                 OnPropertyChanged("Observer");
+                OnPropertyChanged("Coords");
             }
         }
 
-        private double otdir;
-
-        public double OTDir
+        public BaseAngle OTDir
         {
             get { return otdir; }
             set
             {
                 otdir = value;
                 OnPropertyChanged("OTDir");
+                OnPropertyChanged("Coords");
             }
         }
-
-        private double range;
 
         public double Range
         {
@@ -350,11 +456,9 @@ namespace ArtyCalc.Model
             {
                 range = value;
                 OnPropertyChanged("Range");
+                OnPropertyChanged("Coords");
             }
         }
-
-
-        private double dAlt;
 
         public double DAlt
         {
@@ -363,13 +467,19 @@ namespace ArtyCalc.Model
             {
                 dAlt = value;
                 OnPropertyChanged("DAlt");
+                OnPropertyChanged("Coords");
             }
         }
 
 
         protected override Coordinate GetCoords()
         {
-            throw new NotImplementedException();
+            if (observer != null)
+            {
+                return Observer.Coord.Shift(OTDir.GetRadiansRepresentation(), Range, 0, DAlt);
+            }
+            else
+                return Coordinate.Zero;
         }
     }
 
@@ -381,6 +491,10 @@ namespace ArtyCalc.Model
         }
 
         private KnownPoint point;
+        private BaseAngle otdir = new MilAngle();
+        private double right;
+        private double add;
+        private double up;
 
         public KnownPoint Point
         {
@@ -389,22 +503,22 @@ namespace ArtyCalc.Model
             {
                 point = value;
                 OnPropertyChanged("Point");
+                OnPropertyChanged("Coords");
             }
         }
 
-        private double otdir;
-
-        public double OTDir
+        public BaseAngle OTDir
         {
             get { return otdir; }
             set
             {
                 otdir = value;
                 OnPropertyChanged("OTDir");
+                OnPropertyChanged("Coords");
             }
         }
 
-        private double right;
+        
 
         public double Right
         {
@@ -413,10 +527,11 @@ namespace ArtyCalc.Model
             {
                 right = value;
                 OnPropertyChanged("Right");
+                OnPropertyChanged("Coords");
             }
         }
 
-        private double add;
+        
 
         public double Add
         {
@@ -425,9 +540,10 @@ namespace ArtyCalc.Model
             {
                 add = value;
                 OnPropertyChanged("Add");
+                OnPropertyChanged("Coords");
             }
         }
-        private double up;
+        
 
         public double Up
         {
@@ -436,13 +552,21 @@ namespace ArtyCalc.Model
             {
                 up = value;
                 OnPropertyChanged("Up");
+                OnPropertyChanged("Coords");
             }
         }
 
 
         protected override Coordinate GetCoords()
         {
-            throw new NotImplementedException();
+            if (point != null)
+            {
+                return point.Coord.Shift(otdir.GetRadiansRepresentation(), add, right, up);
+            }
+            else
+            {
+                return Coordinate.Zero;
+            }
         }
     }
 }

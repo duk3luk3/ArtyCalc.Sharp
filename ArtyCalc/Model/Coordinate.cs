@@ -116,7 +116,7 @@ namespace ArtyCalc.Model
             
 
             var range = Coordinate.range(c0, c1);
-            var az = Math.Acos((c0.gridY - c1.gridY) / range);
+            var az = Math.Acos((c1.gridY - c0.gridY) / range);
             if (c0.gridX > c1.gridX)
             {
                 az = 2 * Math.PI - az;

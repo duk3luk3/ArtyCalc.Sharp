@@ -7,7 +7,7 @@
         Title="AN/GYK 37"
         Width="700"
         Height="500"
-        DataContext="{Binding RelativeSource={RelativeSource self}}">
+        DataContext="{Binding RelativeSource={RelativeSource self}}" Icon="/ArtyCalc;component/Icon.ico" Closing="Window_Closing">
     <Window.Resources>
         <ObjectDataProvider x:Key="batteryTypeData"
                     MethodName="GetDefinedWeapons" 
@@ -52,6 +52,7 @@
             <Button MinWidth="100" x:Name="BMissionGrid"  Click="BMissionGrid_Click" Content="GRID"/>
             <Button MinWidth="100" x:Name="BMissionPolar" Click="BMissionPolar_Click" Content="POLAR"/>
             <Button MinWidth="100" x:Name="BMissionShift" Click="BMissionShift_Click" Content="SHIFT"/>
+            <Button MinWidth="100" x:Name="BRangetables" Click="BRangetables_Click" Content="Range Tables"/>
         </StackPanel>
         
         <!-- Column 1 Input fields -->
@@ -91,9 +92,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ComboBox Grid.Column="0" x:Name="EObsSelect" ItemsSource="{Binding SelectedBattery.Observers}" SelectedItem="{Binding SelectedObserver, Mode=TwoWay}" DisplayMemberPath="Name" />
             <Button Grid.Column="1" x:Name="BObserverAdd" Click="BObserverAdd_Click" Content="New"/>
+            <Button Grid.Column="2" x:Name="BObserverDel" Click="BObserverDel_Click" Content="Delete"/>
         </Grid>
 
         <TextBox x:Name="EObsName" Grid.Row="2" Grid.Column="3" Text="{Binding SelectedObserver.Name}"          />
@@ -104,9 +107,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="EKPSelect" Grid.Column="0" ItemsSource="{Binding SelectedBattery.Knownpoints}" SelectedItem="{Binding SelectedPoint, Mode=TwoWay}" DisplayMemberPath="Name"/>
             <Button Grid.Column="1" x:Name="BKnownpointAdd" Click="BKnownpointAdd_Click" Content="New"/>
+            <Button Grid.Column="2" x:Name="BKnownpointDel" Click="BKnownpointDel_Click" Content="Delete"/>
         </Grid>
 
         <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="3"  Text="{Binding SelectedItem.Name, ElementName=EKPSelect}"          />
