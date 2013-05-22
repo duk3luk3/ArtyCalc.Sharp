@@ -127,7 +127,9 @@ namespace ArtyCalc.Model
 
         public static Coordinate Add(Coordinate c0, Coordinate c1)
         {
-            return new Coordinate(c0.gridX + c1.gridX, c0.gridY + c1.gridY, c0.altitude + c1.altitude);
+            var res = new Coordinate(c0.gridX + c1.gridX, c0.gridY + c1.gridY, c0.altitude + c1.altitude);
+            res.formatlen = Math.Max(c0.formatlen, c1.formatlen);
+            return res;
         }
 
         public Coordinate Shift(double angle, double add, double right, double up)
@@ -135,7 +137,10 @@ namespace ArtyCalc.Model
             double north = Math.Cos(angle) * add + Math.Sin(angle) * right;
             double east = Math.Sin(angle) * add + Math.Cos(angle) * right;
 
-            return new Coordinate(this.gridX + east, this.gridY + north, this.altitude + up);
+            var res = new Coordinate(this.gridX + east, this.gridY + north, this.altitude + up);
+
+            res.formatlen = 5;
+            return res;
         }
 
         private void setGrid(string gridStr)

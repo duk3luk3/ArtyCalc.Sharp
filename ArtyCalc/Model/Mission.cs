@@ -18,7 +18,7 @@ namespace ArtyCalc.Model
         private BaseAngle attitude;
         private bool dangerClose;
         private string notes;
-        private Ammunition munition;
+        private Ammunition ammunition;
         private Fuze fuze;
         private int adjustPieces;
         private int adjustRounds;
@@ -159,10 +159,10 @@ namespace ArtyCalc.Model
         }
         public Ammunition Ammunition
         {
-            get { return munition; }
+            get { return ammunition; }
             set
             {
-                munition = value;
+                ammunition = value;
                 Console.WriteLine("Ammunition set");
                 OnPropertyChanged("Ammunition");
             }
@@ -216,6 +216,7 @@ namespace ArtyCalc.Model
                 adjustment = value;
                 OnPropertyChanged("Adjustment");
                 OnPropertyChanged("AdjustedCoords");
+                OnPropertyChanged("Coords");
             }
         }
         public Coordinate AdjustedCoords
@@ -325,6 +326,28 @@ namespace ArtyCalc.Model
             this.targetNumber = battery.Prefix + battery.Missions.Count;
 
             PropertyChanged += MissionSpec_PropertyChanged;
+        }
+
+        public void CopyTo(MissionSpec mission)
+        {
+            mission.adjustAdd = this.adjustAdd;
+            mission.adjustment = this.adjustment;
+            mission.adjustOTDir = this.adjustOTDir;
+            mission.adjustPieces = this.adjustPieces;
+            mission.adjustRight = this.adjustRight;
+            mission.adjustRounds = this.adjustRounds;
+            mission.adjustUp = this.adjustUp;
+            mission.ammunition = this.ammunition;
+            mission.attitude = this.attitude;
+            mission.dangerClose = this.dangerClose;
+            mission.fuzeTime = this.fuzeTime;
+            mission.length = this.length;
+            mission.notes = this.notes;
+            mission.radius = this.radius;
+            mission.rounds = this.rounds;
+            mission.roundsLeft = this.roundsLeft;
+            mission.targetDescription = this.targetDescription;
+            mission.targetNumber = this.targetNumber;
         }
 
         void MissionSpec_PropertyChanged(object sender, PropertyChangedEventArgs e)

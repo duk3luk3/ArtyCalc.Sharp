@@ -120,7 +120,9 @@
 
         <StackPanel Grid.Row="10" Grid.ColumnSpan="4" Orientation="Horizontal">
             <Label>MISSION LIST</Label>
+            
             <CheckBox x:Name="MissionLockBox" Content="Locked" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+            <Button HorizontalAlignment="Right" Click="MissionDelete_Click">Delete Mission</Button>
         </StackPanel>
 
         <ListView Grid.Row="11" Grid.ColumnSpan="4" SelectionMode="Single"

@@ -265,6 +265,8 @@
                       ></ComboBox>
 
         </Grid>
+        
+        
 
         <Grid Grid.Row="7" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
@@ -296,7 +298,7 @@
             <TextBox Grid.Row="4" Grid.Column="1" x:Name="EAdjustUp" Text="{Binding Path=CurrentMission.AdjustUp, UpdateSourceTrigger=LostFocus}"></TextBox>
 
             
-            <Button Click="AdjustApply_Click"  Grid.Row="4" Grid.Column="2">Apply</Button>
+            <Button Click="AdjustApply_Click"  Grid.Row="4" Grid.Column="2" >Apply</Button>
 
             <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2">Adjusted Target Coordinates</Label>
 
@@ -311,7 +313,8 @@
             <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Path=CurrentMission.Distance}"></TextBlock>
             <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Path=CurrentMission.Azimuth, Converter={dm:AngleToStringConverter}}"></TextBlock>
 
-            <Button Click="AdjustReset_Click" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Right">Reset</Button>
+            <Button Click="AdjustReset_Click" Grid.Row="0" Grid.Column="5">Reset</Button>
+            <Button Click="AdjustRecord_Click" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Right" Width="43">Record</Button>
 
         </Grid>
         

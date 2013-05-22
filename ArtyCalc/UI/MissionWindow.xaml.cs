@@ -186,9 +186,22 @@ namespace ArtyCalc
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-
-
             e.Cancel = !batterywindow.closing;
+        }
+
+        private void AdjustRecord_Click(object sender, RoutedEventArgs e)
+        {
+            MissionGridSpec mission = new MissionGridSpec(batterywindow.SelectedBattery);
+
+            batterywindow.SelectedBattery.CurrentMission.CopyTo(mission);
+            mission.TargetNumber = mission.TargetNumber + " Recorded";
+            mission.Grid = batterywindow.SelectedBattery.CurrentMission.AdjustedCoords;
+            mission.Adjustment = Coordinate.Zero;
+
+            batterywindow.SelectedBattery.Missions.Add(mission);
+
+            KnownPoint p = new KnownPoint(mission.Grid, mission.TargetNumber);
+            batterywindow.SelectedBattery.Knownpoints.Add(p);
         }
     }
 }

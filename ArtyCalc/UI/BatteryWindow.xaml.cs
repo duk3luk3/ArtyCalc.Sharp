@@ -185,5 +185,10 @@ namespace ArtyCalc
         {
             SelectedBattery.Knownpoints.Remove(SelectedPoint);
         }
+
+        private void MissionDelete_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedBattery.Missions.Remove(SelectedBattery.CurrentMission);
+        }
     }
 }

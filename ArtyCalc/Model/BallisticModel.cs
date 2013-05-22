@@ -153,7 +153,7 @@ namespace ArtyCalc.Model
                     Elevation = elev[0] + elevAdjustVal,
                     Time = time[0] + timeAdjustVal
                 }
-                );                
+                );
             }
 
             return res;
