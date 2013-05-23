@@ -26,7 +26,7 @@ namespace ArtyCalc.Model
         private ObservableCollection<FireSolution> solutions = new ObservableCollection<FireSolution>();
         private FireSolution currentSolution = null;
         
-        private BaseAngle adjustOTDir;
+        private BaseAngle adjustOTDir = new MilAngle();
         private double adjustAdd;
         private double adjustRight;
         private double adjustUp;
@@ -242,6 +242,7 @@ namespace ArtyCalc.Model
 		    {
 			    currentSolution = value;
 			    OnPropertyChanged("CurrentSolution");
+                
 		    }
 	    }
         
@@ -291,7 +292,27 @@ namespace ArtyCalc.Model
 
         public string GetMTB()
         {
-            if (Ammunition != null && CurrentSolution != null && Fuze != null)
+            if (Ammunition == null)
+            {
+                return "No solution: Shell type required";
+            }
+
+            if (CurrentSolution == null)
+            {
+                return "No solution: Please select a solution";
+            }
+
+            if (CurrentSolution.Elevation == -1)
+            {
+                return "No solution for this charge";
+            }
+
+            if (Fuze == null)
+            {
+                return "No solution: Fuze required";
+            }
+
+            if (Ammunition != null && CurrentSolution != null && CurrentSolution.Elevation != -1 && Fuze != null)
             {
 
                 string pieces = "";
@@ -306,7 +327,7 @@ namespace ArtyCalc.Model
 
                 string shell = "Shell " + Ammunition.Designation;
                 string charge = "Charge " + CurrentSolution.Charge;
-                string fuze = "Fuze " + Fuze.Designation;
+                string fuze = "Fuze " + Fuze.Short;
 
                 if (Fuze.HasTimeFuze)
                 {
@@ -316,7 +337,7 @@ namespace ArtyCalc.Model
                 return "Firemission! " + pieces + "! " + shell + "! " + charge + "! " + fuze + " Deflection " + CurrentSolution.Deflection + "! " + "Quadrant " + CurrentSolution.Elevation + "! " + ineffect;
             }
 
-            return "";
+            return "-- No solution --";
         }
 
         public MissionSpec(Battery battery)

@@ -7,15 +7,66 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Geometry.Interpolation;
 using System.ComponentModel;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace ArtyCalc.Model
 {
+    [ValueConversion(typeof(string), typeof(int))]
+    public class TimeToStringConverter : BaseConverter, IValueConverter
+    {
+        public TimeToStringConverter()
+            : base()
+        {
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+
+
+            if (value == null)
+                return DependencyProperty.UnsetValue;
+
+            string s = value as string;
+
+            if (s == "")
+                return DependencyProperty.UnsetValue;
+
+            double p;
+            if (Double.TryParse(s, NumberStyles.Float,NumberFormatInfo.InvariantInfo, out p))
+            {
+                return (int)(p * 1000);
+            }
+            else
+            {
+                return DependencyProperty.UnsetValue;
+            }
+
+            
+        }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is int))
+            {
+                return DependencyProperty.UnsetValue;
+            }
+
+            int v = (int)value;
+
+            int secs = v / 1000;
+            int ms = v % 1000;
+
+            return "" + secs + "." + ms;
+        }
+    }
+
     public class FireSolution : INotifyPropertyChanged
     {
         private int charge;
         private double deflection;
         private double elevation;
-        private double time;
+        private int time;
 
         public int Charge
         {
@@ -47,7 +98,7 @@ namespace ArtyCalc.Model
             }
         }
 
-        public double Time
+        public int Time
         {
             get { return time; }
             set
@@ -56,7 +107,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Time");
             }
         }
-               
 
         protected virtual void OnPropertyChanged(string name)
         {
@@ -151,7 +201,7 @@ namespace ArtyCalc.Model
                     Charge = rt.Charge,
                     Deflection = m.GetInternalRepresentation(),
                     Elevation = elev[0] + elevAdjustVal,
-                    Time = time[0] + timeAdjustVal
+                    Time = (int)(time[0] + timeAdjustVal)
                 }
                 );
             }
@@ -173,11 +223,11 @@ namespace ArtyCalc.Model
             new Weapon() {designation = "Tampella 120mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Lot="DM61 (Proximity) / DM11A5 (Quick)", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\tampella\\tampella_120mm_HE_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -188,11 +238,11 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "HC Smoke", Lot="DM35", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\tampella\\tampella_120mm_WP_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -202,11 +252,11 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "Illum", Lot="DM26", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\tampella\\tampella_120mm_Illum_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -219,11 +269,11 @@ namespace ArtyCalc.Model
             new Weapon() {designation = "M252 81mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Lot="M821A2", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M252\\m252_81mm_HE_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -236,11 +286,11 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "WP", Lot="M375A3", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M252\\m252_81mm_WP_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -250,10 +300,10 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "Illum", Lot="M853A1", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge4",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M252\\m252_81mm_Illum_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -266,13 +316,13 @@ namespace ArtyCalc.Model
             new Weapon() {designation = "2B14 82mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Lot="VO-832DU", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge6",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge4")),
+                        Rangetable.FromFile(5,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge5")),
+                        Rangetable.FromFile(6,(fi  +  "Rangetables\\2B14\\2b14_82mm_HE_Charge6"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -282,13 +332,13 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "WP", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge6",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge4")),
+                        Rangetable.FromFile(5,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge5")),
+                        Rangetable.FromFile(6,(fi  +  "Rangetables\\2B14\\2b14_82mm_WP_Charge6"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -298,10 +348,10 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "Illum", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge3",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\2B14\\2b14_82mm_Illum_Charge3"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -314,11 +364,11 @@ namespace ArtyCalc.Model
             new Weapon() {designation = "M224 60mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Lot="M720A1", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M224\\m224_60mm_HE_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -331,11 +381,11 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "M224 WP", Lot="M722", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(0,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge0",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge4",FileMode.Open))
+                        Rangetable.FromFile(0,(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge0")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M224\\m224_60mm_WP_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -345,10 +395,10 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "M224 Illum", Lot="M721", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge4",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M224\\m224_60mm_Illum_Charge4"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -361,14 +411,14 @@ namespace ArtyCalc.Model
             new Weapon() {designation = "M119 105mm Gun", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "DPICM", Lot="M916", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge6",FileMode.Open)),
-                        Rangetable.FromStream(7,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge7",FileMode.Open)),
-                        Rangetable.FromStream(8,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge8",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge4")),
+                        Rangetable.FromFile(5,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge5")),
+                        Rangetable.FromFile(6,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge6")),
+                        Rangetable.FromFile(7,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge7")),
+                        Rangetable.FromFile(8,(fi  +  "Rangetables\\M119\\m119_105mm_DPICM_Charge8"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -378,14 +428,14 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "HE", Lot="M1", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(5,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(6,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge6",FileMode.Open)),
-                        Rangetable.FromStream(7,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge7",FileMode.Open)),
-                        Rangetable.FromStream(8,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge8",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge4")),
+                        Rangetable.FromFile(5,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge5")),
+                        Rangetable.FromFile(6,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge6")),
+                        Rangetable.FromFile(7,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge7")),
+                        Rangetable.FromFile(8,(fi  +  "Rangetables\\M119\\m119_105mm_HE_Charge8"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -398,13 +448,13 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "Bursting WP / HC Smoke", Lot="M60A2 / M84A1",  Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge6",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge7",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge4")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge5")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge6")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_WP_Charge7"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -415,13 +465,13 @@ namespace ArtyCalc.Model
                 },
                 new Ammunition() { Designation = "M119 Illum", Lot="M314A3", Rangetables = new List<Rangetable>(
                     new Rangetable[] {
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge1",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge2",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge3",FileMode.Open)),
-                        Rangetable.FromStream(4,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge4",FileMode.Open)),
-                        Rangetable.FromStream(1,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge5",FileMode.Open)),
-                        Rangetable.FromStream(2,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge6",FileMode.Open)),
-                        Rangetable.FromStream(3,new FileStream(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge7",FileMode.Open))
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge1")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge2")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge3")),
+                        Rangetable.FromFile(4,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge4")),
+                        Rangetable.FromFile(1,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge5")),
+                        Rangetable.FromFile(2,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge6")),
+                        Rangetable.FromFile(3,(fi  +  "Rangetables\\M119\\m119_105mm_Illum_Charge7"))
                     }
                     ),
                     Fuzes = new ObservableCollection<Fuze>(new Fuze[] {
@@ -594,6 +644,31 @@ namespace ArtyCalc.Model
             return "Charge " + Charge;
         }
 
+        public static Rangetable FromFile(int charge, string file)
+        {
+            //System.Console.WriteLine("Loading charge " + charge + " from file " + file);
+
+            try
+            {
+                FileStream fs = new FileStream(file, FileMode.Open);
+
+                return FromStream(charge, fs);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+                if (e.InnerException != null)
+                {
+                    System.Console.WriteLine(e.InnerException.Message);
+                    if (e.InnerException.InnerException != null)
+                    {
+                        System.Console.WriteLine(e.InnerException.InnerException.Message);
+                    }
+                }
+                throw;
+            }
+        }
+
         public static Rangetable FromStream(int charge, Stream source)
         {
             var rt = new Rangetable(charge);
@@ -609,8 +684,10 @@ namespace ArtyCalc.Model
                     {
                         int elev = int.Parse(l[1]);
                         int dElev = int.Parse(l[2]);
-                        int dTime = (int)(double.Parse(l[3]) * 1000);
-                        int time = (int)(double.Parse(l[4]) * 1000);
+                        int dTime = (int)(double.Parse(l[3],NumberFormatInfo.InvariantInfo) * 1000);
+                        int time = (int)(double.Parse(l[4], NumberFormatInfo.InvariantInfo) * 1000);
+
+                        
                         
 
                         rt.table.Add(new RangetableRow()

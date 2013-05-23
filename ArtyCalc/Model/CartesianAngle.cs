@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows;
+using System.Globalization;
 
 namespace ArtyCalc.Model
 {
@@ -72,7 +73,7 @@ namespace ArtyCalc.Model
             if (s[0] == 'd')
             {
                 var b = new DegreeAngle();
-                b.value = double.Parse(s.Substring(1));
+                b.value = double.Parse(s.Substring(1), NumberFormatInfo.InvariantInfo);
                 return b;
             }
 
@@ -113,7 +114,7 @@ namespace ArtyCalc.Model
             if (s[0] == 'r')
             {
                 var b = new RadAngle();
-                b.value = double.Parse(s.Substring(1));
+                b.value = double.Parse(s.Substring(1),NumberFormatInfo.InvariantInfo);
                 return b;
             }
 
@@ -154,7 +155,7 @@ namespace ArtyCalc.Model
             if (s[0] == 'm')
             {
                 var b = new MilAngle();
-                b.value = double.Parse(s.Substring(1));
+                b.value = double.Parse(s.Substring(1),NumberFormatInfo.InvariantInfo);
                 return b;
             }
 
@@ -195,8 +196,8 @@ namespace ArtyCalc.Model
             if (val == null)
             {
                 double d;
-                if (double.TryParse(s,out d))
-                    val = BaseAngle.Create<MilAngle>(double.Parse(s));
+                if (double.TryParse(s,NumberStyles.Float,NumberFormatInfo.InvariantInfo, out d))
+                    val = BaseAngle.Create<MilAngle>(double.Parse(s,NumberFormatInfo.InvariantInfo));
             }
 
             if (val == null)

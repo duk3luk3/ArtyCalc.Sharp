@@ -27,7 +27,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Range}" Header="Range"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Elevation}" Header="Elevation"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Elev}" Header="Elevation"/>
                     <GridViewColumn DisplayMemberBinding="{Binding ElevationAdjust}" Header="Elevation Adjust per -100m"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Time}" Header="Time"/>
                     <GridViewColumn DisplayMemberBinding="{Binding TimeAdjust}" Header="Time Adjust per -100m"/>

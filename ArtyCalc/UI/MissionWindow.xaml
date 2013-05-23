@@ -255,7 +255,7 @@
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Deflection}"></TextBox>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Elevation}"></TextBox>
 
-            <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=CurrentMission.CurrentSolution.Time}"></TextBox>
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=CurrentMission.CurrentSolution.Time,Converter={dm:TimeToStringConverter}}"></TextBox>
 
             <ComboBox Grid.Row="0" Grid.Column="1"
                       ItemsSource="{Binding Path=CurrentMission.Solutions}"
