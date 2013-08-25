@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{372CDA89-EE80-439B-9BE0-D2E6986F2791}</ProjectGuid>
+    <ProjectGuid>{E99366E1-47DC-4E82-9D36-C1F9D73184D9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ArtyCalc</RootNamespace>
