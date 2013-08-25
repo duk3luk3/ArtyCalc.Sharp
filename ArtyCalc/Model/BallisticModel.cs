@@ -62,7 +62,7 @@ namespace ArtyCalc.Model
         }
     }
 
-    [Serializable]
+    
     public class FireSolution : INotifyPropertyChanged
     {
         private int charge;
@@ -110,11 +110,38 @@ namespace ArtyCalc.Model
             }
         }
 
+        public override string ToString()
+        {
+            if (Elevation > 0)
+            {
+                string angle = " (Low)";
+                if (Elevation > 800)
+                {
+                    angle = " (High)";
+                }
+                return "Charge " + charge + angle;
+            }
+            else
+            {
+                string reason = " -- Too short";
+                if (Elevation == -2)
+                    reason = " -- Too far";
+
+                return "Charge " + charge + reason;
+            }
+        }
+
+        public string Description
+        {
+            get { return ToString(); }
+        }
+
         protected virtual void OnPropertyChanged(string name)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
+                PropertyChanged(this, new PropertyChangedEventArgs("Description"));
             }
         }
 
@@ -180,7 +207,7 @@ namespace ArtyCalc.Model
                         new FireSolution()
                         {
                             Charge = rt.Charge,
-                            Elevation = -1
+                            Elevation = (min > rangedata.Item1) ? -1 : -2 //-1 = under min range, -2 = over max range
                         }
                         );
                     continue;

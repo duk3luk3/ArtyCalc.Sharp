@@ -31,6 +31,14 @@ namespace ArtyCalc.Model
 
         private MissionSpec currentMission;
 
+        public bool MissionSelected
+        {
+            get
+            {
+                return currentMission != null;
+            }
+        }
+
 
         #region Properties
 
@@ -52,6 +60,7 @@ namespace ArtyCalc.Model
             {
                 currentMission = value;
                 OnPropertyChanged("CurrentMission");
+                OnPropertyChanged("MissionSelected");
                 
             }
         }

@@ -107,6 +107,8 @@ namespace ArtyCalc
         {
             if (sender == SelectedBattery && e.PropertyName == "CurrentMission")
             {
+                OnPropertyChanged("MissionSelected");
+
                 if (SelectedBattery.CurrentMission is MissionGridSpec)
                 {
                     EMissionType.SelectedIndex = 0;
@@ -122,8 +124,29 @@ namespace ArtyCalc
             }
         }
 
+        public bool BatterySelected
+        {
+            get
+            {
+                return SelectedBattery != null;
+            }
+        }
+
+        public bool MissionSelected
+        {
+            get
+            {
+                return SelectedBattery != null && SelectedBattery.CurrentMission != null;
+            }
+        }
+
         protected void OnPropertyChanged(string name)
         {
+            if (name == "SelectedBattery")
+            {
+                OnPropertyChanged("BatterySelected");
+            }
+
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
@@ -155,21 +178,21 @@ namespace ArtyCalc
             }
         }
 
-        private void BMissionPolar_Click(object sender, RoutedEventArgs e)
+        private void NewMissionPolar_Click(object sender, RoutedEventArgs e)
         {
             var mission = new MissionPolarSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
             selectedBattery.CurrentMission = mission;
         }
 
-        private void BMissionGrid_Click(object sender, RoutedEventArgs e)
+        private void NewMissionGrid_Click(object sender, RoutedEventArgs e)
         {
             var mission = new MissionGridSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
             selectedBattery.CurrentMission = mission;
         }
 
-        private void BMissionShift_Click(object sender, RoutedEventArgs e)
+        private void NewMissionShift_Click(object sender, RoutedEventArgs e)
         {
             var mission = new MissionShiftSpec(selectedBattery);
             selectedBattery.Missions.Add(mission);
