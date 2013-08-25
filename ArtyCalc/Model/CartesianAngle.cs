@@ -6,9 +6,14 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows;
 using System.Globalization;
+using System.Xml.Serialization;
 
 namespace ArtyCalc.Model
 {
+    [Serializable]
+    [XmlInclude(typeof(MilAngle))]
+    [XmlInclude(typeof(RadAngle))]
+    [XmlInclude(typeof(DegreeAngle))]
     public abstract class BaseAngle
     {
         protected double value;
@@ -46,6 +51,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class DegreeAngle : BaseAngle
     {
         public override double GetInternalRepresentation()
@@ -86,6 +92,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class RadAngle : BaseAngle
     {
 
@@ -127,6 +134,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class MilAngle : BaseAngle
     {
 

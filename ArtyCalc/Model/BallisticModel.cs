@@ -9,6 +9,7 @@ using Geometry.Interpolation;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace ArtyCalc.Model
 {
@@ -61,6 +62,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class FireSolution : INotifyPropertyChanged
     {
         private int charge;
@@ -210,6 +212,25 @@ namespace ArtyCalc.Model
         }
     }
 
+
+    public class WeaponSerializer : ISerializationSurrogate
+    {
+        private const string _key = "Designation";
+
+        public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
+        {
+            Weapon weapon = (obj as Weapon);
+            info.AddValue(_key, weapon.Designation);
+        }
+
+        public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+        {
+            string designation = info.GetValue(_key,typeof(string)) as string;
+            return Weapon.DefinedWeapons.Where(w => w.Designation == designation).Single();
+        }
+    }
+
+    [Serializable]
     public class Weapon
     {
 #if DEBUG
@@ -218,7 +239,7 @@ namespace ArtyCalc.Model
         const string fi = "";
 #endif
 
-
+        #region Defined Weapons
         public static ObservableCollection<Weapon> DefinedWeapons = new ObservableCollection<Weapon>(new Weapon[] {
             new Weapon() {designation = "Tampella 120mm Mortar", Munitions = new ObservableCollection<Ammunition>(new Ammunition[] {
                 new Ammunition() { Designation = "HE", Lot="DM61 (Proximity) / DM11A5 (Quick)", Rangetables = new List<Rangetable>(
@@ -482,6 +503,7 @@ namespace ArtyCalc.Model
             })
             }
         });
+        #endregion
 
         public static ObservableCollection<Weapon> GetDefinedWeapons()
         {
@@ -500,6 +522,7 @@ namespace ArtyCalc.Model
 
     }
 
+    [Serializable]
     public class Ammunition
     {
         private string designation;
@@ -535,6 +558,7 @@ namespace ArtyCalc.Model
 
     }
 
+    [Serializable]
     public class Fuze
     {
         public string Designation { get; set; }
@@ -547,6 +571,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class Rangetable
     {
         private CubicSpline elevSpline = null;
@@ -624,7 +649,7 @@ namespace ArtyCalc.Model
             timeAdjustSpline.Fit(x, dTime);
         }
 
-        public int Charge {get; private set;}
+        public int Charge {get; set;}
 
         private List<RangetableRow> table = new List<RangetableRow>();
 
@@ -634,6 +659,11 @@ namespace ArtyCalc.Model
             set { table = value; }
         }
 
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public Rangetable() { }
+        
         public Rangetable(int charge)
         {
             this.Charge = charge;
@@ -707,6 +737,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public struct RangetableRow
     {
         public int Range { get; set; }

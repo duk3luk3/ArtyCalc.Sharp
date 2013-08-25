@@ -5,299 +5,148 @@
         xmlns:d="clr-namespace:ArtyCalc.Model"
         xmlns:d1="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d1" x:Class="ArtyCalc.BatteryWindow"
         Title="AN/GYK 37"
-        Width="700"
-        Height="500"
+        Width="1000"
+        Height="700"
         DataContext="{Binding RelativeSource={RelativeSource self}}" Icon="/ArtyCalc;component/Icon.ico" Closing="Window_Closing">
     <Window.Resources>
         <ObjectDataProvider x:Key="batteryTypeData"
                     MethodName="GetDefinedWeapons" 
                     ObjectType="{x:Type d:Weapon}"/>
     </Window.Resources>
-    
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="7*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <!-- Column 0 Labels -->
-        <Label Grid.Row="0" Grid.Column="0" Content="Battery Name"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="FDC Callsign"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="Battery Type"/>
-        <Label Grid.Row="3" Grid.Column="0" Content="GRID"/>
-        <Label Grid.Row="4" Grid.Column="0" Content="ALT"/>
-        <Label Grid.Row="5" Grid.Column="0" Content="Dir. of Fire"/>
-        <Label Grid.Row="6" Grid.Column="0" Content="Target Prefix"/>
-        <Label Grid.Row="7" Grid.Column="0" Content="Target # Start"/>
-        <Label Grid.Row="8" Grid.Column="0" Content="NEW MISSION"/>
-        
-        <!-- New mission buttons -->
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="9">
-            <Button MinWidth="100" x:Name="BMissionGrid"  Click="BMissionGrid_Click" Content="GRID"/>
-            <Button MinWidth="100" x:Name="BMissionPolar" Click="BMissionPolar_Click" Content="POLAR"/>
-            <Button MinWidth="100" x:Name="BMissionShift" Click="BMissionShift_Click" Content="SHIFT"/>
-            <Button MinWidth="100" x:Name="BRangetables" Click="BRangetables_Click" Content="Range Tables"/>
-        </StackPanel>
-        
-        <!-- Column 1 Input fields -->
-        <Grid Grid.Column="1" >
+
+    <DockPanel>
+
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Load as New..." Click="Load_Click" Tag="New"></MenuItem>
+                <MenuItem Header="Load and Merge..." Click="Load_Click" Tag="Merge"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Save Selected Battery..." Click="Save_Click" Tag="Selected"></MenuItem>
+                <MenuItem Header="Save all Batteries..." Click="Save_Click" Tag="All"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Batteries">
+                <MenuItem Header="New Battery" ToolTip="Creates a new Battery with dummy data" Click="NewBattery_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Remove selected Battery" Click="RemoveBattery_Click"></MenuItem>
+                <MenuItem Header="Clear Battery list" Click="ClearBattery_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Observers">
+                <MenuItem Header="New Observer" Click="NewObserver_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Remove selected Observer" Click="RemoveObserver_Click"></MenuItem>
+                <MenuItem Header="Clear Observer list" Click="ClearObserver_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Known points">
+                <MenuItem Header="New Point" Click="NewKnownpoint_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Remove selected Point" Click="RemoveKnownpoint_Click"></MenuItem>
+                <MenuItem Header="Clear Point list" Click="ClearKnownpoint_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Show Rangetables..." Click="BRangetables_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+
+
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="20*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <ComboBox x:Name="EBattName"  IsEditable="True" ItemsSource="{Binding BatteryList}" SelectedItem="{Binding SelectedBattery, Mode=TwoWay}" DisplayMemberPath="Name"/>
-            <Button x:Name="EBattSave" Grid.Column="1" Click="EBattSave_Click" Content="Add"/>
-        </Grid>
-        <TextBox x:Name="EBattCallsign" Grid.Row="1" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Callsign}"/>
-        <ComboBox x:Name="EBattType"    Grid.Row="2" Grid.Column="1" DataContext="{Binding SelectedBattery}" ItemsSource="{Binding Source={StaticResource batteryTypeData}}" SelectedItem="{Binding BWeapon}" DisplayMemberPath="Designation"/>
-        <TextBox x:Name="EBattGrid"     Grid.Row="3" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Grid, Converter={d:GridToStringConverter}}"/>
-        <TextBox x:Name="EBattAlt"      Grid.Row="4" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Altitude}"/>
-        <TextBox x:Name="EBattDir"      Grid.Row="5" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Dir, Converter={d:AngleToStringConverter}}"/>
-        <TextBox x:Name="EBattPre"      Grid.Row="6" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Prefix}"/>
-        <TextBox x:Name="EBattStart"    Grid.Row="7" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Start}"/>
-        
-        <!-- Column 2 Labels-->
-        <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Content="OBSERVER INFORMATION"/>
-        <Label Grid.Row="1" Grid.Column="2" Content="Select"/>
-        <Label Grid.Row="2" Grid.Column="2" Content="Name"/>
-        <Label Grid.Row="3" Grid.Column="2" Content="Grid"/>
-        <Label Grid.Row="4" Grid.Column="2" Content="Alt"/>
+            <!-- Column 0 Labels -->
+            <Label Grid.Row="0" Grid.Column="0" Content="Select" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Battery Name" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="FDC Callsign" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="Battery Type" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="GRID" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="ALT" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Dir. of Fire" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Target Prefix" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Target # Start" Grid.ColumnSpan="2"/>
+            <Label Grid.Row="9" Grid.Column="0" Content="NEW MISSION" Grid.ColumnSpan="2"/>
 
-        <Label Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Content="KNOWN POINTS"/>
-        <Label Grid.Row="6" Grid.Column="2" Content="Select"/>
-        <Label Grid.Row="7" Grid.Column="2" Content="Name"/>
-        <Label Grid.Row="8" Grid.Column="2" Content="Grid"/>
-        <Label Grid.Row="9" Grid.Column="2" Content="Alt"/>
-        
-        <!-- Column 3 Edit fields-->
+            <!-- New mission buttons -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="10">
+                <Button MinWidth="80" x:Name="BMissionGrid"  Click="BMissionGrid_Click" Content="GRID"/>
+                <Button MinWidth="80" x:Name="BMissionPolar" Click="BMissionPolar_Click" Content="POLAR"/>
+                <Button MinWidth="80" x:Name="BMissionShift" Click="BMissionShift_Click" Content="SHIFT"/>
+            </StackPanel>
 
-        <Grid  Grid.Row="1" Grid.Column="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" x:Name="EObsSelect" ItemsSource="{Binding SelectedBattery.Observers}" SelectedItem="{Binding SelectedObserver, Mode=TwoWay}" DisplayMemberPath="Name" />
-            <Button Grid.Column="1" x:Name="BObserverAdd" Click="BObserverAdd_Click" Content="New"/>
-            <Button Grid.Column="2" x:Name="BObserverDel" Click="BObserverDel_Click" Content="Delete"/>
-        </Grid>
 
-        <TextBox x:Name="EObsName" Grid.Row="2" Grid.Column="3" Text="{Binding SelectedObserver.Name}"          />
-        <TextBox x:Name="EObsGrid" Grid.Row="3" Grid.Column="3" Text="{Binding SelectedObserver.Coord.Grid, Converter={d:GridToStringConverter}}"    />
-        <TextBox x:Name="EObsAlt" Grid.Row="4" Grid.Column="3"  Text="{Binding SelectedObserver.Coord.Altitude}"/>
 
-        <Grid  Grid.Row="6" Grid.Column="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <ComboBox x:Name="EKPSelect" Grid.Column="0" ItemsSource="{Binding SelectedBattery.Knownpoints}" SelectedItem="{Binding SelectedPoint, Mode=TwoWay}" DisplayMemberPath="Name"/>
-            <Button Grid.Column="1" x:Name="BKnownpointAdd" Click="BKnownpointAdd_Click" Content="New"/>
-            <Button Grid.Column="2" x:Name="BKnownpointDel" Click="BKnownpointDel_Click" Content="Delete"/>
-        </Grid>
+            <ComboBox x:Name="CBBattName" Grid.Column="2" Grid.Row="0" ItemsSource="{Binding BatteryList}" SelectedItem="{Binding SelectedBattery}" DisplayMemberPath="Name"/>
 
-        <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="3"  Text="{Binding SelectedItem.Name, ElementName=EKPSelect}"          />
-        <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="3"  Text="{Binding SelectedItem.Coord.Grid, Converter={d:GridToStringConverter}, ElementName=EKPSelect}"    />
-        <TextBox x:Name="EKPAlt"  Grid.Row="9" Grid.Column="3"   Text="{Binding SelectedItem.Coord.Altitude, ElementName=EKPSelect}"/>
 
-        <StackPanel Grid.Row="10" Grid.ColumnSpan="4" Orientation="Horizontal">
-            <Label>MISSION LIST</Label>
-            
-            <!--<CheckBox x:Name="MissionLockBox" Content="Locked" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>-->
-            <Button HorizontalAlignment="Right" Click="MissionDelete_Click">Delete Mission</Button>
-        </StackPanel>
 
-        <ListView Grid.Row="11" Grid.ColumnSpan="4" SelectionMode="Single"
+            <TextBox x:Name="EBattName" Grid.Row="1" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Name}"/>
+            <TextBox x:Name="EBattCallsign" Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Callsign}"/>
+            <ComboBox x:Name="EBattType"    Grid.Row="3" Grid.Column="2" DataContext="{Binding SelectedBattery}" ItemsSource="{Binding Source={StaticResource batteryTypeData}}" SelectedItem="{Binding BWeapon}" DisplayMemberPath="Designation"/>
+            <TextBox x:Name="EBattGrid"     Grid.Row="4" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Grid, Converter={d:GridToStringConverter}}"/>
+            <TextBox x:Name="EBattAlt"      Grid.Row="5" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Altitude}"/>
+            <TextBox x:Name="EBattDir"      Grid.Row="6" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Dir, Converter={d:AngleToStringConverter}}"/>
+            <TextBox x:Name="EBattPre"      Grid.Row="7" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Prefix}"/>
+            <TextBox x:Name="EBattStart"    Grid.Row="8" Grid.Column="2" DataContext="{Binding SelectedBattery}" Text="{Binding Start}"/>
+
+            <!-- Column 2 Labels-->
+            <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Content="OBSERVER INFORMATION"/>
+            <Label Grid.Row="1" Grid.Column="3" Content="Select"/>
+            <Label Grid.Row="2" Grid.Column="3" Content="Name"/>
+            <Label Grid.Row="3" Grid.Column="3" Content="Grid"/>
+            <Label Grid.Row="4" Grid.Column="3" Content="Alt"/>
+
+            <Label Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Content="KNOWN POINTS"/>
+            <Label Grid.Row="6" Grid.Column="3" Content="Select"/>
+            <Label Grid.Row="7" Grid.Column="3" Content="Name"/>
+            <Label Grid.Row="8" Grid.Column="3" Content="Grid"/>
+            <Label Grid.Row="9" Grid.Column="3" Content="Alt"/>
+
+            <!-- Column 3 Edit fields-->
+
+            <ComboBox Grid.Row="1" Grid.Column="4" x:Name="EObsSelect" ItemsSource="{Binding SelectedBattery.Observers}" SelectedItem="{Binding SelectedObserver, Mode=TwoWay}" DisplayMemberPath="Name" />
+
+
+            <TextBox x:Name="EObsName" Grid.Row="2" Grid.Column="4" Text="{Binding SelectedObserver.Name}"          />
+            <TextBox x:Name="EObsGrid" Grid.Row="3" Grid.Column="4" Text="{Binding SelectedObserver.Coord.Grid, Converter={d:GridToStringConverter}}"    />
+            <TextBox x:Name="EObsAlt" Grid.Row="4" Grid.Column="4"  Text="{Binding SelectedObserver.Coord.Altitude}"/>
+
+            <ComboBox x:Name="EKPSelect" Grid.Row="6" Grid.Column="4" ItemsSource="{Binding SelectedBattery.Knownpoints}" SelectedItem="{Binding SelectedPoint, Mode=TwoWay}" DisplayMemberPath="Name"/>
+
+            <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="4"  Text="{Binding SelectedItem.Name, ElementName=EKPSelect}"          />
+            <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="4"  Text="{Binding SelectedItem.Coord.Grid, Converter={d:GridToStringConverter}, ElementName=EKPSelect}"    />
+            <TextBox x:Name="EKPAlt"  Grid.Row="9" Grid.Column="4"   Text="{Binding SelectedItem.Coord.Altitude, ElementName=EKPSelect}"/>
+
+            <StackPanel Grid.Row="11" Grid.ColumnSpan="5" Orientation="Horizontal">
+                <Label>MISSION LIST</Label>
+
+                <!--<CheckBox x:Name="MissionLockBox" Content="Locked" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>-->
+                <Button HorizontalAlignment="Right" Click="MissionDelete_Click">Delete Mission</Button>
+            </StackPanel>
+
+            <ListView Grid.Row="12" Grid.ColumnSpan="5" SelectionMode="Single"
 				DataContext="{Binding SelectedBattery}"
 				ItemsSource="{Binding Missions}"
                   SelectedItem="{Binding CurrentMission, Mode=TwoWay}"
-                  
-                      >
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding TargetNumber}" Header="Target No"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding TargetDescription}" Header="Description"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Coords.Grid}" Header="Location"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Coords.Altitude}" Header="Altitude"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Attitude, Converter={d:AngleToStringConverter}}" Header="Attitude"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Length}" Header="Length"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Radius}" Header="Radius"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Notes}" Header="Remarks"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
-
-    <!--<Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="16*"/>
-            <ColumnDefinition Width="10*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            
-            
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="136*"/>
-                <ColumnDefinition Width="271*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                
-                
-            </Grid.RowDefinitions>
-
-            <Label Grid.Row="0" Grid.Column="0" Content="Battery Name"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="FDC Callsign"/>
-            <Label Grid.Row="2" Grid.Column="0" Content="Battery Type"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="GRID"/>
-            <Label Grid.Row="4" Grid.Column="0" Content="ALT"/>
-            <Label Grid.Row="5" Grid.Column="0" Content="Dir. of Fire"/>
-            <Label Grid.Row="6" Grid.Column="0" Content="Target Prefix"/>
-            <Label Grid.Row="7" Grid.Column="0" Content="Target # Start"/>
-
-            <Grid Grid.Column="1" Grid.ColumnSpan="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <ComboBox x:Name="EBattName"  IsEditable="True" ItemsSource="{Binding BatteryList}" SelectedItem="{Binding SelectedBattery, Mode=TwoWay}" DisplayMemberPath="Name"/>
-                <Button x:Name="EBattSave" Grid.Column="1" Click="EBattSave_Click" Content="Add"/>
-            </Grid>
-            <TextBox x:Name="EBattCallsign" Grid.Row="1" Grid.Column="1" DataContext="{Binding SelectedBattery}" Text="{Binding Callsign}" Grid.ColumnSpan="2"/>
-            <ComboBox x:Name="EBattType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" ItemsSource="{Binding Source={StaticResource batteryTypeData}}" SelectedItem="{Binding BWeapon}" DisplayMemberPath="Designation"/>
-            <TextBox x:Name="EBattGrid" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Grid, Converter={d:GridToStringConverter}}"/>
-            <TextBox x:Name="EBattAlt" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" Text="{Binding Coords.Altitude}"/>
-            <TextBox x:Name="EBattDir" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" Text="{Binding Dir, Converter={d:AngleToStringConverter}}"/>
-            <TextBox x:Name="EBattPre" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" Text="{Binding Prefix}"/>
-            <TextBox x:Name="EBattStart" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding SelectedBattery}" Text="{Binding Start}"/>
-        </Grid>
-
-        <Grid Grid.Column="0" Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="3" Content="NEW MISSION"/>
-
-            
-        </Grid>
-
-        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Label Grid.Row="0" Grid.ColumnSpan="2" Content="OBSERVER INFORMATION"/>
-
-            <Label Grid.Row="1" Grid.Column="0" Content="Select"/>
-            <Label Grid.Row="2" Grid.Column="0" Content="Name"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="Grid"/>
-            <Label Grid.Row="4" Grid.Column="0" Content="Alt"/>
-
-
-            <Grid  Grid.Row="1" Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox Grid.Column="0" x:Name="EObsSelect" ItemsSource="{Binding SelectedBattery.Observers}" SelectedItem="{Binding SelectedObserver, Mode=TwoWay}" DisplayMemberPath="Name" />
-                <Button Grid.Column="1" x:Name="BObserverAdd" Click="BObserverAdd_Click" Content="New"/>
-            </Grid>
-
-            <TextBox x:Name="EObsName" Grid.Row="2" Grid.Column="1" Text="{Binding SelectedObserver.Name}"          />
-            <TextBox x:Name="EObsGrid" Grid.Row="3" Grid.Column="1" Text="{Binding SelectedObserver.Coord.Grid, Converter={d:GridToStringConverter}}"    />
-            <TextBox x:Name="EObsAlt" Grid.Row="4" Grid.Column="1"  Text="{Binding SelectedObserver.Coord.Altitude}"/>
-
-            <Label Grid.ColumnSpan="2" Grid.Row="5" Content="KNOWN POINTS"/>
-
-            <Label Grid.Row="6" Grid.Column="0" Content="Select"/>
-            <Label Grid.Row="7" Grid.Column="0" Content="Name"/>
-            <Label Grid.Row="8" Grid.Column="0" Content="Grid"/>
-            <Label Grid.Row="9" Grid.Column="0" Content="Alt"/>
-
-            <Grid  Grid.Row="6" Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="EKPSelect" Grid.Column="0" ItemsSource="{Binding SelectedBattery.Knownpoints}" SelectedItem="{Binding SelectedPoint, Mode=TwoWay}" DisplayMemberPath="Name"/>
-                <Button Grid.Column="1" x:Name="BKnownpointAdd" Click="BKnownpointAdd_Click" Content="New"/>
-            </Grid>
-
-            <TextBox x:Name="EKPName" Grid.Row="7" Grid.Column="1"  Text="{Binding SelectedItem.Name, ElementName=EKPSelect}"          />
-            <TextBox x:Name="EKPGrid" Grid.Row="8" Grid.Column="1"  Text="{Binding SelectedItem.Coord.Grid, Converter={d:GridToStringConverter}, ElementName=EKPSelect}"    />
-            <TextBox x:Name="EKPAlt" Grid.Row="9" Grid.Column="1"   Text="{Binding SelectedItem.Coord.Altitude, ElementName=EKPSelect}"/>
-        </Grid>
-
-
-        <Grid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-
-            <Label Content="MISSION LIST"/>
-
-            <ListView Grid.Row="1" SelectionMode="Single"
-				DataContext="{Binding SelectedBattery}"
-				ItemsSource="{Binding Missions}"
+                      SelectionChanged="ListView_SelectionChanged"
                       >
                 <ListView.View>
                     <GridView>
@@ -305,7 +154,7 @@
                         <GridViewColumn DisplayMemberBinding="{Binding TargetDescription}" Header="Description"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Coords.Grid}" Header="Location"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Coords.Altitude}" Header="Altitude"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Attitude}" Header="Attitude"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Attitude, Converter={d:AngleToStringConverter}}" Header="Attitude"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Length}" Header="Length"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Radius}" Header="Radius"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Notes}" Header="Remarks"/>
@@ -313,7 +162,333 @@
                 </ListView.View>
             </ListView>
 
-        </Grid>
+            <Grid Grid.Column="5" Grid.RowSpan="13" DataContext="{Binding SelectedBattery}" Margin="0,0,0,-48">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
-    </Grid>-->
+                <TabControl BorderThickness="0" x:Name="EMissionType">
+                    <TabControl.Resources>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabItem"></ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+
+                    <TabItem Header="Grid">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.ColumnSpan="2">MISSION GRID REFERENCE</Label>
+
+                            <Label Grid.Row="1">Grid</Label>
+                            <Label Grid.Row="2">Alt</Label>
+
+                            <TextBox x:Name="EGridGrid" Grid.Column="1" Grid.Row="1" Text="{Binding Path=CurrentMission.Grid.Grid, Converter={d:GridToStringConverter}, Mode=TwoWay}"></TextBox>
+                            <TextBox x:Name="EGridAlt" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.Grid.Altitude}"></TextBox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Polar">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.ColumnSpan="2">MISSION POLAR COORDINATES</Label>
+
+                            <Label Grid.Column="0" Grid.Row="1">Observer</Label>
+                            <Label Grid.Column="0" Grid.Row="2">OT Dir</Label>
+                            <Label Grid.Column="0" Grid.Row="3">Range</Label>
+                            <Label Grid.Column="0" Grid.Row="4">Add Alt:</Label>
+
+
+                            <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Observers}" SelectedItem="{Binding Path=CurrentMission.Observer, Mode=TwoWay}" DisplayMemberPath="Name"></ComboBox>
+                            <TextBox x:Name="EPolarOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.OTDir, Converter={d:AngleToStringConverter}}" Height="26" VerticalAlignment="Bottom"></TextBox>
+                            <TextBox x:Name="EPolarRange" Grid.Column="1" Grid.Row="3" Text="{Binding Path=CurrentMission.Range}"></TextBox>
+                            <TextBox x:Name="EPolarAddAlt" Grid.Column="1" Grid.Row="4" Text="{Binding Path=CurrentMission.DAlt}"></TextBox>
+
+                        </Grid>
+
+
+
+                    </TabItem>
+                    <TabItem Header="Shift">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.ColumnSpan="2">MISSION SHIFT COORDINATES</Label>
+
+                            <Label Grid.Column="0" Grid.Row="1">Point</Label>
+                            <Label Grid.Column="0" Grid.Row="2">OT Dir</Label>
+                            <Label Grid.Column="0" Grid.Row="3">Right (Left)</Label>
+                            <Label Grid.Column="0" Grid.Row="4">Add (Drop)</Label>
+                            <Label Grid.Column="0" Grid.Row="5">Up (Down)</Label>
+
+
+                            <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Knownpoints}" SelectedItem="{Binding Path=CurrentMission.Point, Mode=TwoWay}" DisplayMemberPath="Name"></ComboBox>
+
+                            <TextBox x:Name="EShiftOTDir" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.OTDir, Converter={d:AngleToStringConverter}}"></TextBox>
+                            <TextBox x:Name="EShiftRight" Grid.Column="1" Grid.Row="3" Text="{Binding Path=CurrentMission.Right}"></TextBox>
+                            <TextBox x:Name="EShiftAdd" Grid.Column="1" Grid.Row="4" Text="{Binding Path=CurrentMission.Add}"></TextBox>
+                            <TextBox x:Name="EShiftUp" Grid.Column="1" Grid.Row="5" Text="{Binding Path=CurrentMission.Up}"></TextBox>
+
+                        </Grid>
+                    </TabItem>
+
+                </TabControl>
+
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.ColumnSpan="2">TARGET DESCRIPTION</Label>
+                    <Label Grid.Row="1" Grid.Column="0">Target Number</Label>
+                    <Label Grid.Row="2" Grid.Column="0">Target Description</Label>
+                    <Label Grid.Row="3" Grid.Column="0">Radius / Width</Label>
+                    <Label Grid.Row="4" Grid.Column="0">Length</Label>
+                    <Label Grid.Row="5" Grid.Column="0">Attitude</Label>
+
+                    <TextBox x:Name="ETgtNr" Grid.Column="1" Grid.Row="1" Text="{Binding Path=CurrentMission.TargetNumber}"></TextBox>
+                    <TextBox x:Name="ETgtDesc" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.TargetDescription}"></TextBox>
+                    <TextBox x:Name="ETgtRadius" Grid.Column="1" Grid.Row="3" Text="{Binding Path=CurrentMission.Radius}"></TextBox>
+                    <TextBox x:Name="ETgtLength" Grid.Column="1" Grid.Row="4" Text="{Binding Path=CurrentMission.Length}"></TextBox>
+                    <TextBox x:Name="ETgtAttitude" Grid.Column="1" Grid.Row="5" Text="{Binding Path=CurrentMission.Attitude, Converter={d:AngleToStringConverter}}"></TextBox>
+                </Grid>
+
+                <Grid Grid.Column="1" Grid.RowSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+
+
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.ColumnSpan="2">METHOD OF ENGAGEMENT</Label>
+
+                    <Label Grid.Row="1">Danger Close</Label>
+                    <Label Grid.Row="2">Notes</Label>
+                    <Label Grid.Row="3">Ammunition</Label>
+                    <Label Grid.Row="4">Fuze</Label>
+                    <Label Grid.Row="5">Fuze-Time</Label>
+                    <Label Grid.Row="6">Round Count</Label>
+                    <Label Grid.Row="7">Adj. Round Count</Label>
+                    <Label Grid.Row="8">Pieces To Fire</Label>
+                    <Label Grid.Row="9">Sheaf</Label>
+
+                    <CheckBox x:Name="EDangerClose" Grid.Column="1" Grid.Row="1" IsChecked="{Binding Path=CurrentMission.DangerClose}">Yes</CheckBox>
+                    <TextBox x:Name="ENotes" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CurrentMission.Notes}"></TextBox>
+                    <!-- SelectedItem="{Binding Path=CurrentMission.Ammunition, Mode=TwoWay}" -->
+                    <ComboBox x:Name="EAmmo" Grid.Column="1" Grid.Row="3" 
+                      ItemsSource="{Binding Path=BWeapon.Munitions}"
+                      SelectedItem="{Binding Path=CurrentMission.Ammunition, Mode=TwoWay}"
+                      DisplayMemberPath="Designation"
+                      ></ComboBox>
+                    <ComboBox x:Name="EFuze" Grid.Column="1" Grid.Row="4" ItemsSource="{Binding Path=CurrentMission.Ammunition.Fuzes}" DisplayMemberPath="Designation" SelectedItem="{Binding Path=CurrentMission.Fuze}"></ComboBox>
+                    <TextBox x:Name="EFuzetime" Grid.Column="1" Grid.Row="5" Text="{Binding Path=CurrentMission.FuzeTime}"></TextBox>
+                    <TextBox x:Name="ERoundcount" Grid.Column="1" Grid.Row="6" Text="{Binding Path=CurrentMission.Rounds}"></TextBox>
+                    <TextBox x:Name="EAdjRoundcount" Grid.Column="1" Grid.Row="7" Text="{Binding Path=CurrentMission.AdjustRounds}"></TextBox>
+                    <TextBox x:Name="EPieces" Grid.Column="1" Grid.Row="8" Text="{Binding Path=CurrentMission.Pieces}"></TextBox>
+                    <ComboBox x:Name="ESheath" Grid.Column="1" Grid.Row="9"></ComboBox>
+
+
+
+
+
+                </Grid>
+
+                <Label Grid.Row="2">FIRES</Label>
+
+                <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
+                    <Button Click="Adjust_Fire_Click">Adjust Fire</Button>
+                    <Button Click="Fire_for_Effect_Click">Fire For Effect</Button>
+                    <Button Click="End_Mission_Click">End mission</Button>
+
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Label>Rounds left:</Label>
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="{Binding Path=CurrentMission.RoundsLeft}"></TextBlock>
+                        <Label>Time to splash:</Label>
+                        <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" x:Name="SplashTimeBlock" >00:00</TextBlock>
+                        <Button Click="Timer_Start" >Call Shot</Button>
+                        <Button IsEnabled="False" x:Name="TimerStopButton" Click="Timer_Stop" >Stop Timer</Button>
+                    </StackPanel>
+                </DockPanel>
+
+                <!--<StackPanel Grid.Row="3" Orientation="Horizontal">
+        
+        </StackPanel>-->
+
+                <Label Grid.Row="4">Message To Observer</Label>
+                <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Text="{Binding Path=CurrentMission.MTO}"/>
+
+
+
+                <Grid Grid.Row="6" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.ColumnSpan="2">Solutions</Label>
+
+                    <Label Grid.Row="1" Grid.Column="0">Charge</Label>
+                    <Label Grid.Row="2" Grid.Column="0">Deflection</Label>
+                    <Label Grid.Row="3" Grid.Column="0">Quadrant</Label>
+
+                    <Label Grid.Row="1" Grid.Column="2">TOF</Label>
+
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Charge}"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Deflection}"></TextBox>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Elevation}"></TextBox>
+
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=CurrentMission.CurrentSolution.Time,Converter={d:TimeToStringConverter}}"></TextBox>
+
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                      ItemsSource="{Binding Path=CurrentMission.Solutions}"
+                      SelectedItem="{Binding Path=CurrentMission.CurrentSolution, Mode=TwoWay}"
+                      DisplayMemberPath="Charge"
+                      x:Name="CurrentSolutionBox"
+                      ></ComboBox>
+
+                </Grid>
+
+
+
+                <Grid Grid.Row="7" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.ColumnSpan="2">Adjustment</Label>
+
+                    <Label Grid.Row="1" Grid.Column="0">OT Dir</Label>
+                    <Label Grid.Row="2" Grid.Column="0">Right</Label>
+                    <Label Grid.Row="3" Grid.Column="0">Add</Label>
+                    <Label Grid.Row="4" Grid.Column="0">Up</Label>
+
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="EAdjustOTDir" Text="{Binding Path=CurrentMission.AdjustOTDir, UpdateSourceTrigger=LostFocus, Converter={d:AngleToStringConverter}}"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="EAdjustRight" Text="{Binding Path=CurrentMission.AdjustRight, UpdateSourceTrigger=LostFocus}"></TextBox>
+                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="EAdjustAdd" Text="{Binding Path=CurrentMission.AdjustAdd, UpdateSourceTrigger=LostFocus}"></TextBox>
+                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="EAdjustUp" Text="{Binding Path=CurrentMission.AdjustUp, UpdateSourceTrigger=LostFocus}"></TextBox>
+
+
+                    <Button Click="AdjustApply_Click"  Grid.Row="4" Grid.Column="2" >Apply</Button>
+
+                    <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2">Adjusted Target Coordinates</Label>
+
+                    <Label Grid.Row="1" Grid.Column="3">Grid</Label>
+                    <Label Grid.Row="2" Grid.Column="3">Alt</Label>
+                    <Label Grid.Row="3" Grid.Column="3">Range</Label>
+                    <Label Grid.Row="4" Grid.Column="3">Azimuth</Label>
+
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Grid}"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Altitude}"></TextBlock>
+
+                    <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Path=CurrentMission.Distance}"></TextBlock>
+                    <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Path=CurrentMission.Azimuth, Converter={d:AngleToStringConverter}}"></TextBlock>
+
+                    <Button Click="AdjustReset_Click" Grid.Row="0" Grid.Column="5">Reset</Button>
+                    <Button Click="AdjustRecord_Click" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Right" ToolTip="Records Mission (changes type to Grid Mission)">Record</Button>
+
+                </Grid>
+
+                <Grid Grid.Row="8" Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0">Message To Line</Label>
+                    <TextBlock Grid.Row="1" Text="{Binding Path=CurrentMission.MTB}" TextWrapping="WrapWithOverflow"></TextBlock>
+                </Grid>
+
+
+
+            </Grid>
+        </Grid>
+    </DockPanel>
 </Window>

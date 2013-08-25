@@ -29,8 +29,8 @@
                     <GridViewColumn DisplayMemberBinding="{Binding Range}" Header="Range"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Elev}" Header="Elevation"/>
                     <GridViewColumn DisplayMemberBinding="{Binding ElevationAdjust}" Header="Elevation Adjust per -100m"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Time}" Header="Time"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding TimeAdjust}" Header="Time Adjust per -100m"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Time, Converter={d:TimeToStringConverter}}" Header="Time"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding TimeAdjust, Converter={d:TimeToStringConverter}}" Header="Time Adjust per -100m"/>
                     
                 </GridView>
             </ListView.View>

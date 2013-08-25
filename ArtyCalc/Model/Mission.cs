@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Xml.Serialization;
 
 namespace ArtyCalc.Model
 {
+    [Serializable]
+    [XmlInclude(typeof(MissionGridSpec))]
+    [XmlInclude(typeof(MissionPolarSpec))]
+    [XmlInclude(typeof(MissionShiftSpec))]
     public abstract class MissionSpec : INotifyPropertyChanged
     {
         #region fields
@@ -20,16 +25,17 @@ namespace ArtyCalc.Model
         private string notes;
         private Ammunition ammunition;
         private Fuze fuze;
-        private int adjustPieces;
+        private int pieces;
         private int adjustRounds;
         private Coordinate adjustment = Coordinate.Zero;
         private ObservableCollection<FireSolution> solutions = new ObservableCollection<FireSolution>();
         private FireSolution currentSolution = null;
-        
+
         private BaseAngle adjustOTDir = new MilAngle();
         private double adjustAdd;
         private double adjustRight;
         private double adjustUp;
+        private int adjustPiece;
 
         private int roundsLeft;
 
@@ -61,6 +67,7 @@ namespace ArtyCalc.Model
         #endregion
 
         #region props
+        [XmlIgnore]
         public int RoundsLeft
         {
             get { return roundsLeft; }
@@ -70,6 +77,8 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("RoundsLeft");
             }
         }
+
+        [XmlIgnore]
         public double Distance
         {
             get
@@ -77,6 +86,8 @@ namespace ArtyCalc.Model
                 return BallisticModel.RangeAzimuthUp(this.battery, this).Item1;
             }
         }
+
+        [XmlIgnore]
         public BaseAngle Azimuth
         {
             get
@@ -90,6 +101,7 @@ namespace ArtyCalc.Model
                 return angle;
             }
         }
+        [XmlIgnore]
         public Coordinate Coords
         {
             get { return GetCoords(); }
@@ -157,6 +169,8 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Notes");
             }
         }
+
+        [XmlIgnore]
         public Ammunition Ammunition
         {
             get { return ammunition; }
@@ -167,6 +181,24 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Ammunition");
             }
         }
+
+        private string ammunition_proxy;
+
+        public string Ammunition_Proxy
+        {
+            get
+            {
+
+                if (ammunition != null)
+                    return ammunition.Designation;
+                else
+                    return ammunition_proxy;
+            }
+            set { ammunition_proxy = value; }
+        }
+
+
+        [XmlIgnore]
         public Fuze Fuze
         {
             get { return fuze; }
@@ -176,24 +208,56 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Fuze");
             }
         }
-        public int AdjustPieces
+
+        private string fuze_Proxy;
+
+        public string Fuze_Proxy
         {
-            get { return adjustPieces; }
+            get
+            {
+                if (fuze != null)
+                    return fuze.Designation;
+                else
+                    return fuze_Proxy;
+            }
             set
             {
-                adjustPieces = value;
-                OnPropertyChanged("AdjustPieces");
+                fuze_Proxy = value;
+            }
+        }
+
+
+
+
+        public int Pieces
+        {
+            get { return pieces; }
+            set
+            {
+                pieces = value;
+                OnPropertyChanged("Pieces");
             }
         }
         public int AdjustRounds
-	{
-		get { return adjustRounds;}
-		set 
-		{
-			adjustRounds = value;
-			OnPropertyChanged("AdjustRounds");
-		}
-	}
+        {
+            get { return adjustRounds; }
+            set
+            {
+                adjustRounds = value;
+                OnPropertyChanged("AdjustRounds");
+            }
+        }
+
+        public int AdjustPiece
+        {
+            get { return adjustPiece; }
+            set
+            {
+                adjustPiece = value;
+                OnPropertyChanged("AdjustPiece");
+            }
+        }
+
         public string MTO
         {
             get
@@ -227,25 +291,25 @@ namespace ArtyCalc.Model
             }
         }
         public ObservableCollection<FireSolution> Solutions
-	    {
-		    get { return solutions;}
-		    set 
-		    {
-		        solutions = value;
-		        OnPropertyChanged("Solutions");
-		    }
-	    }
+        {
+            get { return solutions; }
+            set
+            {
+                solutions = value;
+                OnPropertyChanged("Solutions");
+            }
+        }
         public FireSolution CurrentSolution
-	    {
-		    get { return currentSolution;}
-		    set 
-		    {
-			    currentSolution = value;
-			    OnPropertyChanged("CurrentSolution");
-                
-		    }
-	    }
-        
+        {
+            get { return currentSolution; }
+            set
+            {
+                currentSolution = value;
+                OnPropertyChanged("CurrentSolution");
+
+            }
+        }
+
         public BaseAngle AdjustOTDir
         {
             get { return adjustOTDir; }
@@ -287,7 +351,7 @@ namespace ArtyCalc.Model
 
         public string GetMTO()
         {
-            return battery.Callsign + ", battery adjust fire, " + adjustPieces + " pieces, " + adjustRounds + " rounds, Fuze " + fuze + " in effect, target number " + targetNumber + ", over.";
+            return battery.Callsign + ", battery adjust fire, " + pieces + " pieces, " + Rounds + " rounds, Fuze " + fuze + " in effect, target number " + targetNumber + ", over.";
         }
 
         public string GetMTB()
@@ -319,8 +383,8 @@ namespace ArtyCalc.Model
                 string ineffect = "";
                 if (adjustRounds > 0)
                 {
-                    pieces = "Battery Adjust, Gun Number " + AdjustPieces + " " + AdjustRounds + " Rounds";
-                    ineffect = "" + Rounds + ", " + Fuze.Designation + " in effect";
+                    pieces = "Battery Adjust, Gun Number " + AdjustPiece + " " + AdjustRounds + " Rounds";
+                    ineffect = "" + Rounds + " Rounds, " + Fuze.Designation + " in effect";
                 }
                 else
                     pieces = "Battery " + Rounds + " Rounds";
@@ -334,17 +398,22 @@ namespace ArtyCalc.Model
                     fuze = fuze + ", Time " + fuzeTime;
                 }
 
-                return "Firemission! " + pieces + "! " + shell + "! " + charge + "! " + fuze + " Deflection " + CurrentSolution.Deflection + "! " + "Quadrant " + CurrentSolution.Elevation + "! " + ineffect;
+                return "Firemission! " + pieces + "! " + shell + "! " + charge + "! " + fuze + " Deflection " + CurrentSolution.Deflection.ToString("f0") + "! " + "Quadrant " + CurrentSolution.Elevation.ToString("f0") + "! " + ineffect;
             }
 
             return "-- No solution --";
         }
 
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public MissionSpec() { }
+
         public MissionSpec(Battery battery)
         {
             this.battery = battery;
 
-            this.targetNumber = battery.Prefix + battery.Missions.Count;
+            this.targetNumber = battery.Prefix + (battery.Missions.Count + battery.Start);
 
             PropertyChanged += MissionSpec_PropertyChanged;
         }
@@ -354,7 +423,7 @@ namespace ArtyCalc.Model
             mission.adjustAdd = this.adjustAdd;
             mission.adjustment = this.adjustment;
             mission.adjustOTDir = this.adjustOTDir;
-            mission.adjustPieces = this.adjustPieces;
+            mission.pieces = this.pieces;
             mission.adjustRight = this.adjustRight;
             mission.adjustRounds = this.adjustRounds;
             mission.adjustUp = this.adjustUp;
@@ -382,13 +451,16 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("MTO");
                 OnPropertyChanged("MTB");
             }
-            if (e.PropertyName == "Ammunition" || e.PropertyName == "Fuze" || e.PropertyName == "CurrentSolution")
+            if (e.PropertyName == "Ammunition" || e.PropertyName == "Fuze" || e.PropertyName == "CurrentSolution"
+                || e.PropertyName == "AdjustRounds" || e.PropertyName == "Rounds" || e.PropertyName == "Pieces"
+                || e.PropertyName == "AdjustPiece"
+                )
             {
                 OnPropertyChanged("MTO");
                 OnPropertyChanged("MTB");
             }
 
-            //If Coords changed, recalc fire solutions
+            //If Coords or ammunition changed, recalc fire solutions
             if (e.PropertyName == "AdjustedCoords" || e.PropertyName == "Ammunition")
             {
                 //solutions.Clear();
@@ -424,11 +496,18 @@ namespace ArtyCalc.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [XmlIgnore]
         public Battery battery { get; set; }
     }
 
+    [Serializable]
     public class MissionGridSpec : MissionSpec
     {
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public MissionGridSpec() { }
+
         public MissionGridSpec(Battery battery)
             : base(battery)
         {
@@ -457,11 +536,17 @@ namespace ArtyCalc.Model
         {
             return Grid;
         }
-        
+
     }
 
+    [Serializable]
     public class MissionPolarSpec : MissionSpec
     {
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public MissionPolarSpec() { }
+
         public MissionPolarSpec(Battery battery)
             : base(battery)
         {
@@ -527,8 +612,14 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class MissionShiftSpec : MissionSpec
     {
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public MissionShiftSpec() { }
+
         public MissionShiftSpec(Battery battery)
             : base(battery)
         {
@@ -562,7 +653,7 @@ namespace ArtyCalc.Model
             }
         }
 
-        
+
 
         public double Right
         {
@@ -575,7 +666,7 @@ namespace ArtyCalc.Model
             }
         }
 
-        
+
 
         public double Add
         {
@@ -587,7 +678,7 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Coords");
             }
         }
-        
+
 
         public double Up
         {

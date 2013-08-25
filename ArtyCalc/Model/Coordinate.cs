@@ -40,6 +40,7 @@ namespace ArtyCalc.Model
         }
     }
 
+    [Serializable]
     public class Coordinate : INotifyPropertyChanged
     {
         private int formatlen = 4;
@@ -173,6 +174,12 @@ namespace ArtyCalc.Model
             gridY = y;
 
         }
+
+
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public Coordinate() { }
 
         public Coordinate(string grid, float alt)
         {

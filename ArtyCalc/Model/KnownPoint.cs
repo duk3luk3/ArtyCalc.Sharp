@@ -6,6 +6,7 @@ using System.ComponentModel;
 
 namespace ArtyCalc.Model
 {
+    [Serializable]
     public class KnownPoint : INotifyPropertyChanged
     {
         private Coordinate coord;
@@ -33,11 +34,19 @@ namespace ArtyCalc.Model
             }
         }
 
+        /// <summary>
+        /// Empty constructor for serialization
+        /// </summary>
+        public KnownPoint() { }
+
         public KnownPoint(Coordinate coord, string name)
         {
             this.coord = coord;
             this.name = name;
         }
+
+
+        
 
 
         protected void OnPropertyChanged(string name)

@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E99366E1-47DC-4E82-9D36-C1F9D73184D9}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ArtyCalc</RootNamespace>
     <AssemblyName>ArtyCalc</AssemblyName>
@@ -79,7 +79,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\BatteryData.cs" />
     <Compile Include="Model\NatoAlphabet.cs" />
+    <Compile Include="Model\SObservableCollection.cs" />
     <Compile Include="UI\RangetableWindow.xaml.cs">
       <DependentUpon>RangetableWindow.xaml</DependentUpon>
     </Compile>
@@ -102,19 +104,12 @@
       <DependentUpon>BatteryWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\MissionWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\RangetableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UI\MissionWindow.xaml.cs">
-      <DependentUpon>MissionWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

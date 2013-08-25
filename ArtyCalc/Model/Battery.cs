@@ -6,24 +6,27 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace ArtyCalc.Model
 {
+    [Serializable]
     public class Battery : INotifyPropertyChanged
     {
         private string name;
         private string callsign;
 
         private Weapon bWeapon;
+
         private Coordinate coords;
         private BaseAngle dir;
 
         private string prefix;
         private int start;
 
-        private ObservableCollection<KnownPoint> observers = new ObservableCollection<KnownPoint>();
-        private ObservableCollection<KnownPoint> knownpoints = new ObservableCollection<KnownPoint>();
-        private ObservableCollection<MissionSpec> missions = new ObservableCollection<MissionSpec>();
+        private SObservableCollection<KnownPoint> observers = new SObservableCollection<KnownPoint>();
+        private SObservableCollection<KnownPoint> knownpoints = new SObservableCollection<KnownPoint>();
+        private SObservableCollection<MissionSpec> missions = new SObservableCollection<MissionSpec>();
 
 
         private MissionSpec currentMission;
@@ -31,7 +34,7 @@ namespace ArtyCalc.Model
 
         #region Properties
 
-        public ObservableCollection<MissionSpec> Missions
+        public SObservableCollection<MissionSpec> Missions
         {
             get { return missions; }
             /*set
@@ -40,6 +43,8 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Missions");
             }*/
         }
+
+        [XmlIgnore]
         public MissionSpec CurrentMission
         {
             get { return currentMission; }
@@ -47,9 +52,11 @@ namespace ArtyCalc.Model
             {
                 currentMission = value;
                 OnPropertyChanged("CurrentMission");
+                
             }
         }
-        public ObservableCollection<KnownPoint> Observers
+        
+        public SObservableCollection<KnownPoint> Observers
         {
             get { return observers; }
             /*set
@@ -58,7 +65,7 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Observers");
             }*/
         }
-        public ObservableCollection<KnownPoint> Knownpoints
+        public SObservableCollection<KnownPoint> Knownpoints
         {
             get { return knownpoints; }
             /*set
@@ -67,6 +74,8 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Knownpoints");
             }*/
         }
+        
+        [XmlIgnore]
         public Weapon BWeapon
         {
             get { return bWeapon; }
@@ -76,6 +85,27 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("BWeapon");
             }
         }
+
+
+        public string Weapon_Surrogate
+        {
+            get
+            {
+                if (BWeapon != null)
+                    return BWeapon.Designation;
+                else
+                    return "";
+            }
+            set
+            {
+                var selection = Weapon.DefinedWeapons.Where(w => w.Designation == value);
+
+                if (selection.Count() == 1)
+                    BWeapon = selection.Single();
+            }
+        }
+
+
         public Coordinate Coords
         {
             get { return coords; }
@@ -101,7 +131,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Dir");
             }
         }
-
         public string Prefix
         {
             get { return prefix; }
@@ -111,8 +140,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Prefix");
             }
         }
-
-
         public int Start
         {
             get { return start; }
@@ -122,8 +149,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Start");
             }
         }
-
-
         public string Name
         {
             get { return name; }
@@ -133,7 +158,6 @@ namespace ArtyCalc.Model
                 OnPropertyChanged("Name");
             }
         }
-
         public string Callsign
         {
             get { return callsign; }
@@ -149,6 +173,11 @@ namespace ArtyCalc.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Parameterless constructor for serialization
+        /// </summary>
+        public Battery() { }
+
         public Battery(string name, string callsign, Weapon bweapon, Coordinate coords, BaseAngle dir, string prefix, int start)
         {
             this.name = name;
@@ -162,6 +191,8 @@ namespace ArtyCalc.Model
             // using initializer instead
             //this.observers = new ObservableCollection<KnownPoint>();
             //this.knownpoints = new ObservableCollection<KnownPoint>();
+
+
         }
 
         protected void OnPropertyChanged(string name)
@@ -172,12 +203,53 @@ namespace ArtyCalc.Model
             }
         }
 
-        public void Save(XmlWriter wr)
+        public void Save(TextWriter wr)
         {
-            wr.WriteStartElement("Battery");
-            wr.WriteElementString("Weapon", BWeapon.Designation);
-            wr.WriteElementString("Callsign", Callsign);
-            
+
+            XmlSerializer serializer = new XmlSerializer(typeof(Battery));
+
+            serializer.Serialize(wr, this);
+        }
+
+        public void ReInitialize()
+        {
+            foreach (var m in missions)
+            {
+                m.battery = this;
+
+                var ammo = bWeapon.Munitions.Where(mun => mun.Designation == m.Ammunition_Proxy);
+
+                if (ammo.Count() == 1)
+                {
+                    m.Ammunition = ammo.Single();
+
+                    var fuze = m.Ammunition.Fuzes.Where(f => f.Designation == m.Fuze_Proxy);
+
+                    if (fuze.Count() == 1)
+                    {
+                        m.Fuze = fuze.Single();
+                    }
+                }
+            }
+        }
+
+        public static Battery Load(TextReader rr)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Battery));
+
+            Battery batt = serializer.Deserialize(rr) as Battery;
+
+            foreach (var m in batt.missions)
+            {
+                m.battery = batt;
+
+                var ammo = batt.bWeapon.Munitions.Where(mun => mun.Designation == m.Ammunition_Proxy);
+
+                if (ammo.Count() == 1)
+                    m.Ammunition = ammo.Single();
+            }
+
+            return batt;
         }
 
     }
