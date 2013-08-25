@@ -42,9 +42,7 @@ namespace ArtyCalc.Model
             else
             {
                 return DependencyProperty.UnsetValue;
-            }
-
-            
+            }            
         }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -59,7 +57,7 @@ namespace ArtyCalc.Model
             int secs = v / 1000;
             int ms = v % 1000;
 
-            return "" + secs + "." + ms;
+            return "" + secs + "." + (ms / 100);
         }
     }
 

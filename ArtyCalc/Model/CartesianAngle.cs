@@ -223,11 +223,11 @@ namespace ArtyCalc.Model
 
             if (b is DegreeAngle)
             {
-                return 'd' + b.GetInternalRepresentation().ToString();
+                return 'd' + b.GetInternalRepresentation().ToString("F2");
             }
             else if (b is MilAngle)
             {
-                return 'm' + b.GetInternalRepresentation().ToString();
+                return 'm' + b.GetInternalRepresentation().ToString("F0");
             }
             else if (b is RadAngle)
             {

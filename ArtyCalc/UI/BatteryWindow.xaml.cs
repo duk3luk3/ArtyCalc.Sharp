@@ -350,66 +350,66 @@ namespace ArtyCalc
 
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            //using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog())
-            //{
-            //    ofd.FileName = SavePath;
-            //    ofd.Filter = SaveFilter;
+            using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog())
+            {
+                ofd.FileName = SavePath;
+                ofd.Filter = SaveFilter;
 
-            //    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //    {
-            //        XmlSerializer s = new XmlSerializer(typeof(SObservableCollection<Battery>));
+                if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    XmlSerializer s = new XmlSerializer(typeof(SObservableCollection<Battery>));
 
-            //        SObservableCollection<Battery> loadedBatteries = s.Deserialize(new StreamReader(ofd.FileName)) as SObservableCollection<Battery>;
+                    SObservableCollection<Battery> loadedBatteries = s.Deserialize(new StreamReader(ofd.FileName)) as SObservableCollection<Battery>;
 
-            //        if (((sender as System.Windows.Controls.Control).Tag as string) == "New")
-            //        {
-            //            SelectedBattery = null;
-            //            BatteryList.Clear();
-            //        }
+                    if (((sender as System.Windows.Controls.Control).Tag as string) == "New")
+                    {
+                        SelectedBattery = null;
+                        BatteryList.Clear();
+                    }
 
-            //        foreach (var b in loadedBatteries)
-            //        {
-            //            b.ReInitialize();
-            //            b.PropertyChanged += Battery_PropertyChanged;
-            //            BatteryList.Add(b);
-            //        }
+                    foreach (var b in loadedBatteries)
+                    {
+                        b.ReInitialize();
+                        b.PropertyChanged += Battery_PropertyChanged;
+                        BatteryList.Add(b);
+                    }
 
 
 
-            //    }
-            //}
+                }
+            }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            //FileInfo f = new FileInfo(SavePath);
-            //f.Directory.Create();
+            FileInfo f = new FileInfo(SavePath);
+            f.Directory.Create();
 
-            //using (System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog())
-            //{
-            //    sfd.FileName = SavePath;
-            //    sfd.CreatePrompt = true;
-            //    sfd.CheckFileExists = false;
-            //    sfd.CheckPathExists = false;
-            //    sfd.Filter = SaveFilter;
+            using (System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog())
+            {
+                sfd.FileName = SavePath;
+                sfd.CreatePrompt = true;
+                sfd.CheckFileExists = false;
+                sfd.CheckPathExists = false;
+                sfd.Filter = SaveFilter;
 
-            //    if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //    {
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
 
 
 
-            //        var coll = BatteryList;
-            //        if (((sender as System.Windows.Controls.Control).Tag as string) == "Selected")
-            //        {
-            //            coll = new SObservableCollection<Battery>();
-            //            coll.Add(SelectedBattery);
-            //        }
+                    var coll = BatteryList;
+                    if (((sender as System.Windows.Controls.Control).Tag as string) == "Selected")
+                    {
+                        coll = new SObservableCollection<Battery>();
+                        coll.Add(SelectedBattery);
+                    }
 
-            //        XmlSerializer s = new XmlSerializer(typeof(SObservableCollection<Battery>));
+                    XmlSerializer s = new XmlSerializer(typeof(SObservableCollection<Battery>));
 
-            //        s.Serialize(new StreamWriter(sfd.FileName), coll);
-            //    }
-            //}
+                    s.Serialize(new StreamWriter(sfd.FileName), coll);
+                }
+            }
         }
 
         private void RemoveBattery_Click(object sender, RoutedEventArgs e)

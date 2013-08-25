@@ -414,11 +414,11 @@
 
                     <Label Grid.Row="1" Grid.Column="2">TOF</Label>
 
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Charge}"></TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Deflection}"></TextBox>
-                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Elevation}"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Charge}" IsReadOnly="True"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Deflection, StringFormat=F0}" IsReadOnly="True"></TextBox>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=CurrentMission.CurrentSolution.Elevation, StringFormat=F0}" IsReadOnly="True"></TextBox>
 
-                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=CurrentMission.CurrentSolution.Time,Converter={d:TimeToStringConverter}}"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=CurrentMission.CurrentSolution.Time,Converter={d:TimeToStringConverter}}" IsReadOnly="True"/>
 
                     <ComboBox Grid.Row="0" Grid.Column="1"
                       ItemsSource="{Binding Path=CurrentMission.Solutions}"
@@ -473,7 +473,7 @@
                     <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Grid}"></TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Path=CurrentMission.AdjustedCoords.Altitude}"></TextBlock>
 
-                    <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Path=CurrentMission.Distance}"></TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Path=CurrentMission.Distance, StringFormat=F0}"></TextBlock>
                     <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Path=CurrentMission.Azimuth, Converter={d:AngleToStringConverter}}"></TextBlock>
 
                     <Button Click="AdjustReset_Click" Grid.Row="0" Grid.Column="5">Reset</Button>
