@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AEE264F4-4E82-4BA4-9264-A08456E26075}</ProjectGuid>
+    <ProjectGuid>{44FB93F6-CE7E-4CB6-AC09-5CF46E91485A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GeometryLib</RootNamespace>
