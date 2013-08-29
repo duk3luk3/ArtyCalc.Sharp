@@ -324,7 +324,7 @@ namespace ArtyCalc
         private void AdjustApply_Click(object sender, RoutedEventArgs e)
         {
             var m = SelectedBattery.CurrentMission;
-            m.Adjustment = m.Adjustment.Shift(m.AdjustOTDir.GetRadiansRepresentation(), m.AdjustAdd, m.AdjustRight, m.AdjustUp);
+            m.Adjustment = m.Adjustment.Shift(m.AdjustOTDir.RadiansValue, m.AdjustAdd, m.AdjustRight, m.AdjustUp);
         }
 
         private void Adjust_Fire_Click(object sender, RoutedEventArgs e)

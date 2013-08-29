@@ -18,10 +18,22 @@ namespace ArtyCalc.Model
     {
         protected double value;
 
-        abstract public double GetInternalRepresentation();
-        abstract public double GetRadiansRepresentation();
-        abstract public void SetInternalRepresentation(double val);
-        abstract public void SetRadiansRepresentation(double val);
+        public double InternalValue
+        {
+            get { return value; }
+            set { this.value = value; }
+        }
+
+        [XmlIgnore]
+        public double RadiansValue
+        {
+            get { return GetRadiansRepresentation(); }
+            set { SetRadiansRepresentation(value); }
+        }
+
+        abstract protected double GetRadiansRepresentation();
+
+        abstract protected void SetRadiansRepresentation(double val);
 
         protected static double DegToRad(double deg)
         {
@@ -46,7 +58,7 @@ namespace ArtyCalc.Model
         public static T Create<T>(double val) where T: BaseAngle, new()
         {
             T b = new T();
-            b.SetInternalRepresentation(val);
+            b.InternalValue = val;
             return b;
         }
     }
@@ -54,22 +66,15 @@ namespace ArtyCalc.Model
     [Serializable]
     public class DegreeAngle : BaseAngle
     {
-        public override double GetInternalRepresentation()
-        {
-            return value;
-        }
 
-        public override double GetRadiansRepresentation()
+
+        protected override double GetRadiansRepresentation()
         {
             return DegToRad(value);
         }
 
-        public override void SetInternalRepresentation(double val)
-        {
-            this.value = val;
-        }
 
-        public override void SetRadiansRepresentation(double val)
+        protected override void SetRadiansRepresentation(double val)
         {
             this.value = RadToDeg(val);
         }
@@ -96,22 +101,16 @@ namespace ArtyCalc.Model
     public class RadAngle : BaseAngle
     {
 
-        public override double GetInternalRepresentation()
+        
+
+        protected override double GetRadiansRepresentation()
         {
             return value;
         }
 
-        public override double GetRadiansRepresentation()
-        {
-            return value;
-        }
+        
 
-        public override void SetInternalRepresentation(double val)
-        {
-            this.value = val;
-        }
-
-        public override void SetRadiansRepresentation(double val)
+        protected override void SetRadiansRepresentation(double val)
         {
             this.value = val;
         }
@@ -138,22 +137,13 @@ namespace ArtyCalc.Model
     public class MilAngle : BaseAngle
     {
 
-        public override double GetInternalRepresentation()
-        {
-            return value;
-        }
-
-        public override double GetRadiansRepresentation()
+        protected override double GetRadiansRepresentation()
         {
             return MilToRad(value);
         }
 
-        public override void SetInternalRepresentation(double val)
-        {
-            this.value = val;
-        }
 
-        public override void SetRadiansRepresentation(double val)
+        protected override void SetRadiansRepresentation(double val)
         {
             this.value = RadToMil(val);
         }
@@ -223,19 +213,19 @@ namespace ArtyCalc.Model
 
             if (b is DegreeAngle)
             {
-                return 'd' + b.GetInternalRepresentation().ToString("F2");
+                return 'd' + b.InternalValue.ToString("F2");
             }
             else if (b is MilAngle)
             {
-                return 'm' + b.GetInternalRepresentation().ToString("F0");
+                return 'm' + b.InternalValue.ToString("F0");
             }
             else if (b is RadAngle)
             {
-                return 'r' + b.GetInternalRepresentation().ToString();
+                return 'r' + b.InternalValue.ToString();
             }
             else
             {
-                return 'r' + b.GetRadiansRepresentation().ToString();
+                return 'r' + b.RadiansValue.ToString();
             }
         }
     }

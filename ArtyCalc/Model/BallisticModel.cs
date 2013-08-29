@@ -182,7 +182,7 @@ namespace ArtyCalc.Model
             var azimuth = rangedata.Item2;
             var up = rangedata.Item3;
 
-            var deflection = (Math.PI + (azimuth - battery.Dir.GetRadiansRepresentation()));
+            var deflection = (Math.PI + (azimuth - battery.Dir.RadiansValue));
             if (deflection < 0)
                 deflection = deflection + (2 * Math.PI);
 
@@ -190,7 +190,7 @@ namespace ArtyCalc.Model
                 deflection = deflection - (2 * Math.PI);
 
             MilAngle m = new MilAngle();
-            m.SetRadiansRepresentation(deflection);
+            m.RadiansValue = deflection;
 
 
             var rangeArr = new float[] { (float)rangedata.Item1 };
@@ -227,7 +227,7 @@ namespace ArtyCalc.Model
                 res.Add(new FireSolution()
                 {
                     Charge = rt.Charge,
-                    Deflection = m.GetInternalRepresentation(),
+                    Deflection = m.InternalValue,
                     Elevation = elev[0] + elevAdjustVal,
                     Time = (int)(time[0] + timeAdjustVal)
                 }

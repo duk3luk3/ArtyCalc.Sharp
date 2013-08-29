@@ -96,7 +96,7 @@ namespace ArtyCalc.Model
 
                 var angle = new MilAngle();
 
-                angle.SetRadiansRepresentation(az);
+                angle.RadiansValue = az;
 
                 return angle;
             }
@@ -383,7 +383,7 @@ namespace ArtyCalc.Model
                 string ineffect = "";
                 if (adjustRounds > 0)
                 {
-                    pieces = "Battery Adjust, Gun Number " + AdjustPiece + " " + AdjustRounds + " Rounds";
+                    pieces = "Battery Adjust, Gun Number " + NatoAlphabet.digits[AdjustPiece] + " " + AdjustRounds + " Rounds";
                     ineffect = "" + Rounds + " Rounds, " + Fuze.Designation + " in effect";
                 }
                 else
@@ -605,7 +605,7 @@ namespace ArtyCalc.Model
         {
             if (observer != null)
             {
-                return Observer.Coord.Shift(OTDir.GetRadiansRepresentation(), Range, 0, DAlt);
+                return Observer.Coord.Shift(OTDir.RadiansValue, Range, 0, DAlt);
             }
             else
                 return Coordinate.Zero;
@@ -696,7 +696,7 @@ namespace ArtyCalc.Model
         {
             if (point != null)
             {
-                return point.Coord.Shift(otdir.GetRadiansRepresentation(), add, right, up);
+                return point.Coord.Shift(otdir.RadiansValue, add, right, up);
             }
             else
             {
